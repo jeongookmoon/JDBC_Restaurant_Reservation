@@ -4,7 +4,7 @@ USE RestaurantReservation;
 CREATE TABLE Customer(
   cID INT AUTO_INCREMENT,
   name VARCHAR(50),
-  phoneNum (int),
+  phoneNum INT,
   primary key(cID)
 );
 
