@@ -4,9 +4,10 @@ USE RestaurantReservation;
 CREATE TABLE Customer(
   cID INT AUTO_INCREMENT,
   name VARCHAR(50),
-  phoneNum INT,
+  phoneNum VARCHAR(10),
   primary key(cID)
 );
+ALTER TABLE Customer AUTO_INCREMENT = 1;
 
 CREATE TABLE Employee(
   sID INT AUTO_INCREMENT,
@@ -14,6 +15,8 @@ CREATE TABLE Employee(
   isOff BOOLEAN,
   primary key(sID)
 );
+
+ALTER TABLE Employee AUTO_INCREMENT = 1;
 
 CREATE TABLE Restaurant(
   tID INT AUTO_INCREMENT,
@@ -23,8 +26,9 @@ CREATE TABLE Restaurant(
   subServerID INT,
   primary key(tID),
   FOREIGN KEY(sID) REFERENCES Employee(sID) on update cascade,
-  FOREIGN KEY(subServerID) REFERENCES Employee(sID) on update cascade,
+  FOREIGN KEY(subServerID) REFERENCES Employee(sID) on update cascade
 );
+ALTER TABLE Restaurant AUTO_INCREMENT = 1;
 
 CREATE TABLE Reservations(
   numOfTable INT,
@@ -41,4 +45,8 @@ CREATE TABLE CurrentDropIns(
   queueID INT,
   primary key (cID, numOfTable),
   FOREIGN KEY (cID) REFERENCES Customer(cID) on update cascade
-); 
+);
+
+#LOAD DATA LOCAL INFILE '../data/employee.txt' INTO TABLE Employee;
+#LOAD DATA LOCAL INFILE '../data/customer.txt' INTO TABLE Customer;
+#LOAD DATA LOCAL INFILE '../data/restaurant.txt' INTO TABLE Restaurant;
