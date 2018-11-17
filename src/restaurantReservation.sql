@@ -47,6 +47,6 @@ CREATE TABLE CurrentDropIns(
   FOREIGN KEY (cID) REFERENCES Customer(cID) on update cascade
 );
 
-#LOAD DATA LOCAL INFILE '../data/employee.txt' INTO TABLE Employee;
+LOAD DATA LOCAL INFILE '../data/employee.txt' INTO TABLE Employee;
 #LOAD DATA LOCAL INFILE '../data/customer.txt' INTO TABLE Customer;
 #LOAD DATA LOCAL INFILE '../data/restaurant.txt' INTO TABLE Restaurant;
