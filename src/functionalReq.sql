@@ -7,8 +7,14 @@ where Customer.cID = Reservations.cID
 group by customer.cID
 having count(*)>1;
 
-/*A count of how many reservations ahead of a given reservations
-(ie “theres 5 reservations ahead of yours”)*/
+/*list of employees that are not assigned to a table*/
+select name
+from Employee e1
+where not exists (
+  select sid
+  from Restaurant
+  where sid = e1.sid
+)
 
 /*The average number of tables requested for customers (drop-ins and reservation)*/
 select avg(tables)
@@ -123,3 +129,23 @@ BEGIN
     SET subServerID = NULL and sID = NEW.sID
     WHERE subServerID = NEW.sID;
 END;
+
+
+
+/*Find all reservations and current drop in of a particular  customer*/
+DELIMITER //
+CREATE PROCEDURE allDropInAndReservation (IN name VARCHAR, IN phoneNum VARCHAR)
+BEGIN
+  select numOfTable, timeDropIn
+  from CurrentDropIns
+  where cid in (select cid
+                from Customer
+                where Customer.name = name and Customer.phoneNum = phoneNum);
+
+  select numOfTable, timeReserved
+  from reservations
+  cid in (select cid
+                from Customer
+                where Customer.name = name and Customer.phoneNum = phoneNum);
+END //
+DELIMITER ;
