@@ -34,8 +34,16 @@ CREATE TABLE Reservations(
   numOfTable INT,
   timeReserved VARCHAR(50),
   cID INT,
+  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   primary key (cID, numOfTable),
   FOREIGN KEY (cID) REFERENCES Customer(cID) on update cascade
+);
+
+CREATE TABLE ReservationsArchive(
+  numOfTable INT,
+  timeReserved VARCHAR(50),
+  cID INT,
+  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE CurrentDropIns(
@@ -43,9 +51,19 @@ CREATE TABLE CurrentDropIns(
   timeDropIn VARCHAR(50),
   cID INT,
   queueID INT,
+  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   primary key (cID, numOfTable),
   FOREIGN KEY (cID) REFERENCES Customer(cID) on update cascade
 );
+
+CREATE TABLE CurrentDropInsArchive(
+  numOfTable INT,
+  timeDropIn VARCHAR(50),
+  cID INT,
+  queueID INT,
+  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
 
 LOAD DATA LOCAL INFILE '../data/employee.txt' INTO TABLE Employee;
 #LOAD DATA LOCAL INFILE '../data/customer.txt' INTO TABLE Customer;
