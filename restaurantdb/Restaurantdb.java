@@ -1,9 +1,7 @@
-/**
- * 
- */
-package restaurantdb;
 
 import java.util.Scanner;
+import java.sql.*;
+
 
 /**
  * @author Hung Tang, Faith Chau, Jeong Moon
@@ -11,12 +9,50 @@ import java.util.Scanner;
  *
  */
 public class Restaurantdb {
-	
-	public void accessEmployee() {
-		System.out.println("Please enter your server ID");
-		
+
+	Connection conn ;
+
+	public Restaurantdb(){
+		try{
+			Class.forName("com.mysql.jdbc.Driver");
+			//DriverManager.useSSL=false;
+			conn = DriverManager.getConnection(
+				"jdbc:mysql://localhost:3306/RestaurantReservation","root","faith114"
+			);
+
+		}catch(Exception e){
+			System.out.println(e);
+		}
 	}
-	
+
+	public void accessEmployee() {
+		//System.out.println("Please enter your server ID");
+		System.out.println("Insert Employee Name");
+		Scanner scanner = new Scanner(System.in);
+		String eName = scanner.nextLine();
+
+		try{
+			// PreparedStatement stmt = conn.prepareStatement("INSERT INTO Employee(name,isOff) VALUES (?,?)");
+			// stmt.setString(1, eName);
+			// stmt.setInt(2, 0);
+			// stmt.executeUpdate();
+
+			System.out.println("Change to time off?");
+			System.out.println("[A] Yes");
+			System.out.println("[B] No");
+			String ans = scanner.next();
+			if (ans.equals("A"))
+			{
+				PreparedStatement stmt2 = conn.prepareStatement("Update Employee set isOff = 1 where name = ?");
+				stmt2.setString(1, eName);
+				stmt2.executeUpdate();
+			}
+		}catch(Exception e){
+			System.out.println(e);
+		}
+
+	}
+
 	public void createCustomer() {
 		System.out.println("Can we have your first name and last name, please?");
 		Scanner firstN = new Scanner(System.in);
@@ -28,34 +64,44 @@ public class Restaurantdb {
 		System.out.println("is your name "+ firstName+ " "+ lastName+" correct?");
 		System.out.println("[A] Yes");
 		System.out.println("[B] No");
-		Scanner optionScan = new Scanner(System.in);			
+		Scanner optionScan = new Scanner(System.in);
 		String cusInput = optionScan.nextLine();
 		if (cusInput.equals("A".toLowerCase())) {
 			System.out.println("Please enter your phone number: ");
 			Scanner phoneN = new Scanner(System.in);
-			int phoneNumber = phoneN.nextInt(); //Will match with database later
-			reservationOption();
+			String phoneNumber = phoneN.next(); //Will match with database later
+
+			try{
+				PreparedStatement stmt = conn.prepareStatement("INSERT INTO Customer(name, phoneNum) VALUES (?,?)");
+				stmt.setString(1, firstName+" "+lastName);
+				stmt.setString(2, phoneNumber);
+				stmt.executeUpdate();
+			}catch(Exception e){
+				System.out.println(e);
+			}
+
+
 		}
-		
-		
-		
+
+
+
 	}
 	public void returnCustomer() {
-		
+
 		System.out.println("Can we have your phone number, please? ");
 		Scanner phoneN = new Scanner(System.in);
-		int phoneNumber = phoneN.nextInt(); //Will match with database later
+		String phoneNumber = phoneN.next(); //Will match with database later
 		reservationOption();
-		
-		
-		
+
+
+
 	}
 	public void customerPrompt() {
 		System.out.println("Are you new customer?");
 		System.out.println("Please select one option: ");
 		System.out.println("[A] Yes");
 		System.out.println("[B] No");
-		Scanner customerScan = new Scanner(System.in);			
+		Scanner customerScan = new Scanner(System.in);
 		String cusInput = customerScan.nextLine();
 		if (cusInput.equals("A".toLowerCase())) {
 			System.out.println("Thank you for choosing DB Restaurant");
@@ -68,7 +114,7 @@ public class Restaurantdb {
 		else {
 			System.out.println("That's not a valid answer");
 		}
-		
+
 	}
 	public void reservationOption() {
 		System.out.println("Please select one of the options below: ");
@@ -77,27 +123,15 @@ public class Restaurantdb {
 		System.out.println("[C] Update personal information ");
 		Scanner selectOption = new Scanner(System.in);
 		String optionS= selectOption.nextLine();
-		
+
 	}
 
 	/**
 	 * main method prompting the user
 	 * @param args
 	 */
-	public static void main(String[] args) {
-		System.out.println("Welcome to the DB Restaurant Reservation System");
-		System.out.println("Please select one option: ");
-		System.out.println("[A] DB employee?");
-		System.out.println("[B] DB customer?");
-		Scanner scan = new Scanner(System.in);		
-		String input = scan.nextLine();
-		Restaurantdb res = new Restaurantdb();
-		if (input.equals("A".toLowerCase())) {
-			res.accessEmployee();
-		}
-		else {
-			res.customerPrompt();
-		}
-	}
+	// public static void main(String[] args) {
+	//
+	// }
 
 }
