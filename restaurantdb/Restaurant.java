@@ -1,19 +1,33 @@
+import java.sql.PreparedStatement;
 import java.util.Scanner;
 public class Restaurant{
   public static void main(String[]args){
-    System.out.println("Welcome to the DB Restaurant Reservation System");
-		System.out.println("Please select one option: ");
-		System.out.println("[A] DB employee?");
-		System.out.println("[B] DB customer?");
+	  	System.out.println("Welcome to the DB Restaurant Reservation System");
 		Scanner scan = new Scanner(System.in);
-		String input = scan.next();
-		Restaurantdb res = new Restaurantdb();
-		if (input.equals("A")) {
-			res.accessEmployee();
+		String terminate = 0;
+		while(terminate == 0) {
+			System.out.println("Please select one option: ");
+			System.out.println("[A] DB employee?");
+			System.out.println("[B] DB customer?");
+			String input = scan.nextLine().toLowerCase();
+			Restaurantdb res = new Restaurantdb();
+			try {
+				if (input.equals("a")) {
+					res.accessEmployee();
+				}
+				else if(input.equals("b")){
+					res.customerPrompt();
+				}
+				else if(input.equals("q")){
+					terminate = 1;
+				}
+				else {
+					System.out.println("Please Choose either A or B");
+				}
+			}catch(Exception error) {
+				System.out.println(error);	
+			}	
 		}
-		else {
-			res.customerPrompt();
-		}
-
+		System.out.println("Good Bye");
   }
 }
