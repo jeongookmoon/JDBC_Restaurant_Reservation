@@ -4,7 +4,7 @@ public class Restaurant{
   public static void main(String[]args){
 	  	System.out.println("Welcome to the DB Restaurant Reservation System");
 		Scanner scan = new Scanner(System.in);
-		String terminate = 0;
+		int terminate = 0;
 		while(terminate == 0) {
 			System.out.println("Please select one option: ");
 			System.out.println("[A] DB employee?");

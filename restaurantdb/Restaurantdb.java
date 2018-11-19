@@ -40,8 +40,8 @@ public class Restaurantdb {
 			System.out.println("Change to time off?");
 			System.out.println("[A] Yes");
 			System.out.println("[B] No");
-			String ans = scanner.next();
-			if (ans.equals("A"))
+			String ans = scanner.nextLine().toLowerCase();
+			if (ans.equals("a"))
 			{
 				PreparedStatement stmt2 = conn.prepareStatement("Update Employee set isOff = 1 where name = ?");
 				stmt2.setString(1, eName);
