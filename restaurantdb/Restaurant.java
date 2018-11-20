@@ -10,16 +10,28 @@ public class Restaurant {
 			System.out.println("Please select one option: ");
 			System.out.println("[A] DB employee?");
 			System.out.println("[B] DB customer?");
+			System.out.println("[C] DB restaurant?");
+			System.out.println("[D] DB currentDropIns?");
+			System.out.println("[E] DB reservations?");
 			System.out.println("[Q] Quit");
 
 			try {
 				String input = scan.nextLine().toLowerCase();
 				switch (input) {
 				case "a":
-					res.accessEmployee();
+					res.employeeMenu();
 					break;
 				case "b":
 					res.customerPrompt();
+					break;
+				case "c":
+
+					break;
+				case "d":
+
+					break;
+				case "e":
+
 					break;
 				case "q":
 					endFlag = true;
