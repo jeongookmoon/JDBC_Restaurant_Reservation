@@ -17,7 +17,7 @@ public class Restaurantdb {
 			// DriverManager.useSSL=false;
 			conn = DriverManager.getConnection(
 					"jdbc:mysql://localhost:3306/RestaurantReservation?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&autoReconnect=true&useSSL=false",
-					"root", "faith114");
+					"root", "1q2w3e4r");
 
 		} catch (Exception e) {
 			System.out.println(e);
@@ -62,7 +62,7 @@ public class Restaurantdb {
 		}
 	}
 
-	public void accessEmployee() {
+	public void employeeMenu() {
 		// selectAll("employee"); print all tuples for debug
 		Scanner scanner = new Scanner(System.in);
 		boolean endFlag = false;

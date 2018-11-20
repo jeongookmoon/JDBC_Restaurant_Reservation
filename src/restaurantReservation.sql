@@ -67,5 +67,5 @@ CREATE TABLE CurrentDropInsArchive(
 
 # if the below data path doesn't work, use the full path from your machine
 LOAD DATA LOCAL INFILE '../data/employee.txt' INTO TABLE Employee;
-#LOAD DATA LOCAL INFILE '../data/customer.txt' INTO TABLE Customer;
-#LOAD DATA LOCAL INFILE '../data/restaurant.txt' INTO TABLE Restaurant;
+LOAD DATA LOCAL INFILE '../data/customer.txt' INTO TABLE Customer;
+LOAD DATA LOCAL INFILE '../data/restaurant.txt' INTO TABLE Restaurant;
