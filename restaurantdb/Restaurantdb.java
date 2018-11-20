@@ -24,35 +24,198 @@ public class Restaurantdb {
 			System.out.println(e);
 		}
 	}
-
-	public void accessEmployee() {
-		//System.out.println("Please enter your server ID");
-		System.out.println("Insert Employee Name");
-		Scanner scanner = new Scanner(System.in);
-		String eName = scanner.nextLine();
-
-		try{
-			// PreparedStatement stmt = conn.prepareStatement("INSERT INTO Employee(name,isOff) VALUES (?,?)");
-			// stmt.setString(1, eName);
-			// stmt.setInt(2, 0);
-			// stmt.executeUpdate();
-
-			System.out.println("Change to time off?");
-			System.out.println("[A] Yes");
-			System.out.println("[B] No");
-			String ans = scanner.next().toLowerCase();
-			System.out.println(ans);
-			if (ans.equals("a"))
-			{	
-				PreparedStatement stmt2 = conn.prepareStatement("Update Employee set isOff = 1 where name = ?");
-				stmt2.setString(1, eName);
-				stmt2.executeUpdate();
-				System.out.println("Finished Execution!");
+	
+	public void closeConnection() {
+		try {
+			if(conn != null) {
+				conn.close();
 			}
-		}catch(Exception e){
-			System.out.println(e);
+		}catch(SQLException e) {
+				System.out.println("Query Error:" + e.getStackTrace() );
 		}
+	}
 
+	public void selectAll(String tableName) {
+		try {
+			String query = "SELECT * FROM " + tableName;
+			Statement stmt = conn.createStatement();
+			ResultSet rst = stmt.executeQuery(query);
+			ResultSetMetaData rsmt = rst.getMetaData();
+			
+			// Print column names
+			String output = "";
+			System.out.println(rsmt.getColumnCount());
+			for(int i=1; i<=rsmt.getColumnCount(); i++) {
+				output = output + rsmt.getColumnName(i);
+				if(i!=rsmt.getColumnCount()) {
+					output = output + "\t";
+				}
+			}
+			System.out.println("All Tuples from "+ tableName);
+			System.out.println(output);
+			System.out.println();
+
+			// # incomplete #
+			// Print tuples
+			//while(rst.next()) {		
+			//}
+		}catch (SQLException e) {
+			System.out.println("Query Error: " + e.getStackTrace());
+		}
+	}
+	
+	public void accessEmployee() {
+		//selectAll("employee"); print all tuples for debug
+		
+		boolean endFlag = false;
+		while(endFlag != true) {
+			System.out.println("<<Employee Menu>>\n");
+			System.out.println("[A] Insert Employee into DB");
+			System.out.println("[B] Delete Employee from DB");
+			System.out.println("[C] Update Employee IsOff");
+			System.out.println("[M] MainMenu");
+			Scanner scanner = new Scanner(System.in);
+			String ans = scanner.nextLine().toLowerCase();
+			if(ans.equals("a")) {
+				insertEmployeeMenu();
+			} else if(ans.equals("b")) {
+				deleteEmployeeMenu();
+			} else if(ans.equals("c")) {
+				updateEmployeeIsOffMenu();
+			} else if(ans.equals("m")) {
+				endFlag = true;
+			} else {
+				menuError();
+			}
+		}
+	}
+	
+	public int insertEmployee(String name, boolean isOFF, int phoneNum) {
+		int result = 0;
+		try {
+			PreparedStatement pstmt = conn.prepareStatement("INSERT INTO Employee (name, isOff, phoneNum) VALUES (?,?,?)");
+			pstmt.setString(1, name);
+			pstmt.setBoolean(2, isOFF);
+			pstmt.setInt(3, phoneNum);
+			result = pstmt.executeUpdate();	
+		} catch(SQLException e) {
+			System.out.println("Query Error: " + e.getStackTrace());	
+		}
+		return result;
+	}
+	
+	public void insertEmployeeMenu() {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("<<Insert Employee>>\n");
+		
+		System.out.println("Employee Name?");
+		String name = scanner.nextLine();
+		
+		System.out.println("Is the employee off today?");
+		System.out.println("[A] Yes");
+		System.out.println("[B] No");
+		
+		String ans = scanner.nextLine().toLowerCase();
+		boolean isOff = false;
+		if (ans.equals("a"))
+		{	
+			isOff = true;
+		}
+		
+		System.out.println("Employee Phone Number?");
+		int phoneNum = scanner.nextInt();
+		String dummy = scanner.nextLine(); // Consumes "\n"
+		
+		if( insertEmployee(name, isOff, phoneNum) != 0) {
+			success();
+		} else {
+			fail();
+		}
+	}
+	
+	public int deleteEmployee(String name, int phoneNum) {
+		int result = 0;
+		try {
+			PreparedStatement pstmt = conn.prepareStatement("DELETE FROM Employee WHERE name=? and phoneNum=?");
+			pstmt.setString(1, name);
+			pstmt.setInt(2, phoneNum);
+			result = pstmt.executeUpdate();	
+		} catch(SQLException e) {
+			System.out.println("Query Error: " + e.getStackTrace());	
+		}
+		return result;
+	}
+	
+	public void deleteEmployeeMenu() {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("<<Delete Employee>>\n");
+		
+		System.out.println("Employee Name?");
+		String name = scanner.nextLine();
+		
+		System.out.println("Employee Phone Number?");
+		int phoneNum = scanner.nextInt();
+		String dummy = scanner.nextLine(); // Consumes "\n"
+		
+		if( deleteEmployee(name, phoneNum) != 0) {
+			success();
+		} else {
+			fail();
+		}
+	}
+	
+	public int updateEmployee(String name, boolean isOFF, int phoneNum) {
+		int result = 0;
+		try {
+			PreparedStatement pstmt = conn.prepareStatement("Update Employee set isOff=? where name=? and phoneNum=?");
+			pstmt.setBoolean(1, isOFF);
+			pstmt.setString(2, name);
+			pstmt.setInt(3, phoneNum);
+			result = pstmt.executeUpdate();	
+		} catch(SQLException e) {
+			System.out.println("Query Error: " + e.getStackTrace());	
+		}
+		return result;
+	}
+	
+	public void updateEmployeeIsOffMenu() {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("<<Update Employee IsOff>>\n");
+		
+		System.out.println("Employee Name?");
+		String name = scanner.nextLine();
+		
+		System.out.println("Employee Phone Number?");
+		int phoneNum = scanner.nextInt();
+		String dummy = scanner.nextLine(); // Consumes "\n"
+		
+		System.out.println("[A] Switched to Off");
+		System.out.println("[B] Switched to Back to Work");
+		
+		String ans = scanner.nextLine().toLowerCase();
+		boolean isOff = false;
+		if (ans.equals("a"))
+		{	
+			isOff = true;
+		}
+				
+		if( updateEmployee(name, isOff, phoneNum) != 0) {
+			success();
+		} else {
+			fail();
+		}
+	}	
+	
+	public static void menuError() {
+		  System.out.println("Please Choose Valid Option");
+	}
+	
+	public static void success() {
+		System.out.println("Successfully Done");
+	}
+	
+	public static void fail() {
+		System.out.println("Failed");
 	}
 
 	public void createCustomer() {

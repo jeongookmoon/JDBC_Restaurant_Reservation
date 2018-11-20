@@ -13,6 +13,7 @@ CREATE TABLE Employee(
   sID INT AUTO_INCREMENT,
   name VARCHAR(50),
   isOff BOOLEAN,
+  phoneNum VARCHAR(10),
   primary key(sID)
 );
 
@@ -64,7 +65,7 @@ CREATE TABLE CurrentDropInsArchive(
   updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-
+# if the below data path doesn't work, use the full path from your machine
 LOAD DATA LOCAL INFILE '../data/employee.txt' INTO TABLE Employee;
 #LOAD DATA LOCAL INFILE '../data/customer.txt' INTO TABLE Customer;
 #LOAD DATA LOCAL INFILE '../data/restaurant.txt' INTO TABLE Restaurant;
