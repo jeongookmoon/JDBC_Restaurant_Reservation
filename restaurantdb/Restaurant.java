@@ -1,43 +1,43 @@
 import java.util.Scanner;
 
-public class Restaurant{
-  public static void main(String[]args){
-	  	System.out.println("Welcome to the DB Restaurant Reservation System");
+public class Restaurant {
+	public static void main(String[] args) {
+		System.out.println("Welcome to the DB Restaurant Reservation System");
+		Restaurantdb res = new Restaurantdb();
 		Scanner scan = new Scanner(System.in);
 		boolean endFlag = false;
-		while(endFlag != true) {
+		while (endFlag != true) {
 			System.out.println("Please select one option: ");
 			System.out.println("[A] DB employee?");
 			System.out.println("[B] DB customer?");
 			System.out.println("[Q] Quit");
-			
-			String input = scan.nextLine().toLowerCase();
-			
-			Restaurantdb res = new Restaurantdb();
-			
+
 			try {
-				if (input.equals("a")) {
+				String input = scan.nextLine().toLowerCase();
+				switch (input) {
+				case "a":
 					res.accessEmployee();
-				}
-				else if(input.equals("b")){
+					break;
+				case "b":
 					res.customerPrompt();
-				}
-				else if(input.equals("q")){
+					break;
+				case "q":
 					endFlag = true;
-				}
-				else {
+					break;
+				default:
 					menuError();
 				}
-			}catch(Exception error) {
-				System.out.println(error);	
-			}	
+			} catch (Exception error) {
+				System.out.println(error);
+			}
 		}
-		
+
 		scan.close();
+		res.closeConnection();
 		System.out.println("Good Bye");
-  }
-  
-  public static void menuError() {
-	  System.out.println("Please Choose Valid Option");
-  }
+	}
+
+	public static void menuError() {
+		System.out.println("Please Choose Valid Option");
+	}
 }
