@@ -9,6 +9,7 @@ public class Restaurant{
 			System.out.println("Please select one option: ");
 			System.out.println("[A] DB employee?");
 			System.out.println("[B] DB customer?");
+			System.out.println("[Q] Quit");
 			String input = scan.nextLine().toLowerCase();
 			Restaurantdb res = new Restaurantdb();
 			try {

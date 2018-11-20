@@ -40,12 +40,14 @@ public class Restaurantdb {
 			System.out.println("Change to time off?");
 			System.out.println("[A] Yes");
 			System.out.println("[B] No");
-			String ans = scanner.nextLine().toLowerCase();
+			String ans = scanner.next().toLowerCase();
+			System.out.println(ans);
 			if (ans.equals("a"))
-			{
+			{	
 				PreparedStatement stmt2 = conn.prepareStatement("Update Employee set isOff = 1 where name = ?");
 				stmt2.setString(1, eName);
 				stmt2.executeUpdate();
+				System.out.println("Finished Execution!");
 			}
 		}catch(Exception e){
 			System.out.println(e);
@@ -102,12 +104,12 @@ public class Restaurantdb {
 		System.out.println("[A] Yes");
 		System.out.println("[B] No");
 		Scanner customerScan = new Scanner(System.in);
-		String cusInput = customerScan.nextLine();
-		if (cusInput.equals("A".toLowerCase())) {
+		String cusInput = customerScan.nextLine().toLowerCase();
+		if (cusInput.equals("a")) {
 			System.out.println("Thank you for choosing DB Restaurant");
 			createCustomer();
 		}
-		else if (cusInput.equals("B".toLowerCase())){
+		else if (cusInput.equals("b")){
 			System.out.println("Welcome back, thank you for choosing DB restaurant");
 			returnCustomer();
 		}
