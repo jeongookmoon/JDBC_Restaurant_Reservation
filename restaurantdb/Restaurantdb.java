@@ -62,6 +62,129 @@ public class Restaurantdb {
 		}
 	}
 
+	public void restaurantMenu() {
+		// selectAll("Restaurant"); print all tuples for debug
+		Scanner scanner = new Scanner(System.in);
+		boolean endFlag = false;
+		while (endFlag != true) {
+			System.out.println("<<Restaurant Table Menu>>\n");
+			System.out.println("[A] Insert Restaurant Table into DB");
+			System.out.println("[B] Delete Restaurant Table from DB");
+			System.out.println("[C] Update Restaurant Table Server Back");
+			System.out.println("[M] MainMenu");
+			String input = scanner.nextLine().toLowerCase();
+			switch (input) {
+			case "a":
+				insertRestaurantMenu();
+				break;
+			case "b":
+				deleteRestaurantMenu();
+				break;
+			case "c":
+				updateRestaurantServerBackMenu();
+				break;
+			case "m":
+				endFlag = true;
+				break;
+			default:
+				menuError();
+			}
+		}
+	}
+
+	public int insertRestaurant(boolean occupied, int numOfSeats, int sID) {
+		int result = 0;
+		try {
+			PreparedStatement pstmt = conn
+					.prepareStatement("INSERT INTO Restaurant (occupied, numOfSeats, sID) VALUES (?,?,?)");
+			pstmt.setBoolean(1, occupied);
+			pstmt.setInt(2, numOfSeats);
+			pstmt.setInt(3, sID);
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("Query Error: " + e.getStackTrace());
+		}
+		return result;
+	}
+
+	public void insertRestaurantMenu() {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("<<Insert Restaurant Table>>\n");
+
+		System.out.println("Occupied?");
+		System.out.println("[A] Yes");
+		System.out.println("[B] No");
+		String input = scanner.nextLine().toLowerCase();
+		boolean occupied = input.equals("a") ? true : false;
+
+		System.out.println("How many seats?");
+		int numOfSeats = scanner.nextInt();
+		String dummy = scanner.nextLine(); // Consumes "\n"
+
+		System.out.println("Server ID?");
+		int sID = scanner.nextInt();
+		dummy = scanner.nextLine(); // Consumes "\n"
+
+		if (insertRestaurant(occupied, numOfSeats, sID) != 0)
+			success();
+		else
+			fail();
+	}
+
+	public int deleteRestaurant(int tID) {
+		int result = 0;
+		try {
+			PreparedStatement pstmt = conn.prepareStatement("DELETE FROM Restaurant WHERE tID=?");
+			pstmt.setInt(1, tID);
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("Query Error: " + e.getStackTrace());
+		}
+		return result;
+	}
+
+	public void deleteRestaurantMenu() {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("<<Delete Restaurant Table>>\n");
+
+		System.out.println("Table ID?");
+		int tID = scanner.nextInt();
+		String dummy = scanner.nextLine(); // Consumes "\n"
+
+		if (deleteRestaurant(tID) != 0)
+			success();
+		else
+			fail();
+
+	}
+
+	public int updateRestaurantServerBack(int tID) {
+		int result = 0;
+		try {
+			PreparedStatement pstmt = conn.prepareStatement("Update Restaurant set subServerID=? where tID=?");
+			pstmt.setNull(1, 1);
+			pstmt.setInt(2, tID);
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("Query Error: " + e.getStackTrace());
+		}
+		return result;
+	}
+
+	public void updateRestaurantServerBackMenu() {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("<<Update Restaurant DB>>\n");
+
+		System.out.println("Table ID?");
+		int tID = scanner.nextInt();
+		String dummy = scanner.nextLine(); // Consumes "\n"
+
+		if (updateRestaurantServerBack(tID) != 0)
+			success();
+		else
+			fail();
+	}
+
 	public void employeeMenu() {
 		// selectAll("employee"); print all tuples for debug
 		Scanner scanner = new Scanner(System.in);

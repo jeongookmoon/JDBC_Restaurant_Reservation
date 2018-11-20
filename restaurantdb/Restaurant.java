@@ -25,7 +25,7 @@ public class Restaurant {
 					res.customerPrompt();
 					break;
 				case "c":
-
+					res.restaurantMenu();
 					break;
 				case "d":
 
