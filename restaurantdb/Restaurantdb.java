@@ -17,7 +17,7 @@ public class Restaurantdb {
 			// DriverManager.useSSL=false;
 			conn = DriverManager.getConnection(
 					"jdbc:mysql://localhost:3306/RestaurantReservation?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&autoReconnect=true&useSSL=false",
-					"root", "1q2w3e4r");
+					"root", "faith114");
 
 		} catch (Exception e) {
 			System.out.println(e);
