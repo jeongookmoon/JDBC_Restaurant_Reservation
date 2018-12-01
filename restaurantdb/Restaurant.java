@@ -22,7 +22,7 @@ public class Restaurant {
 					res.employeeMenu();
 					break;
 				case "b":
-					res.customerPrompt();
+					res.customerMenu();
 					break;
 				case "c":
 					res.restaurantMenu();
@@ -31,7 +31,7 @@ public class Restaurant {
 
 					break;
 				case "e":
-
+					res.reservationMenu();
 					break;
 				case "q":
 					endFlag = true;

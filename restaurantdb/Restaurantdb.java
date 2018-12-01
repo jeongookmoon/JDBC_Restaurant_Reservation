@@ -79,7 +79,7 @@ public class Restaurantdb {
 					String colVal = rs.getString(i);
 					System.out.print(rsmd.getColumnName(i) + ": " + colVal);
 				}
-				System.out.println("");
+				System.out.println();
 			}
 			System.out.println();
 		} catch (SQLException e) {
@@ -232,14 +232,14 @@ public class Restaurantdb {
 		}
 	}
 
-	public int insertEmployee(String name, boolean isOFF, int phoneNum) {
+	public int insertEmployee(String name, boolean isOFF, String phoneNum) {
 		int result = 0;
 		try {
 			PreparedStatement pstmt = conn
 					.prepareStatement("INSERT INTO Employee (name, isOff, phoneNum) VALUES (?,?,?)");
 			pstmt.setString(1, name);
 			pstmt.setBoolean(2, isOFF);
-			pstmt.setInt(3, phoneNum);
+			pstmt.setString(3, phoneNum);
 			result = pstmt.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println("Query Error: " + e.getStackTrace());
@@ -262,8 +262,7 @@ public class Restaurantdb {
 		boolean isOff = ans.equals("a") ? true : false;
 
 		System.out.println("Employee Phone Number?");
-		int phoneNum = scanner.nextInt();
-		String dummy = scanner.nextLine(); // Consumes "\n"
+		String phoneNum = scanner.nextLine();
 
 		if (insertEmployee(name, isOff, phoneNum) != 0)
 			success();
@@ -271,12 +270,12 @@ public class Restaurantdb {
 			fail();
 	}
 
-	public int deleteEmployee(String name, int phoneNum) {
+	public int deleteEmployee(String name, String phoneNum) {
 		int result = 0;
 		try {
 			PreparedStatement pstmt = conn.prepareStatement("DELETE FROM Employee WHERE name=? and phoneNum=?");
 			pstmt.setString(1, name);
-			pstmt.setInt(2, phoneNum);
+			pstmt.setString(2, phoneNum);
 			result = pstmt.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println("Query Error: " + e.getStackTrace());
@@ -292,8 +291,7 @@ public class Restaurantdb {
 		String name = scanner.nextLine();
 
 		System.out.println("Employee Phone Number?");
-		int phoneNum = scanner.nextInt();
-		String dummy = scanner.nextLine(); // Consumes "\n"
+		String phoneNum = scanner.nextLine();
 
 		if (deleteEmployee(name, phoneNum) != 0)
 			success();
@@ -302,13 +300,13 @@ public class Restaurantdb {
 
 	}
 
-	public int updateEmployee(String name, boolean isOFF, int phoneNum) {
+	public int updateEmployee(String name, boolean isOFF, String phoneNum) {
 		int result = 0;
 		try {
 			PreparedStatement pstmt = conn.prepareStatement("Update Employee set isOff=? where name=? and phoneNum=?");
 			pstmt.setBoolean(1, isOFF);
 			pstmt.setString(2, name);
-			pstmt.setInt(3, phoneNum);
+			pstmt.setString(3, phoneNum);
 			result = pstmt.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println("Query Error: " + e.getStackTrace());
@@ -324,8 +322,7 @@ public class Restaurantdb {
 		String name = scanner.nextLine();
 
 		System.out.println("Employee Phone Number?");
-		int phoneNum = scanner.nextInt();
-		String dummy = scanner.nextLine(); // Consumes "\n"
+		String phoneNum = scanner.nextLine();
 
 		System.out.println("[A] Switched to Off, IsOff = 1");
 		System.out.println("[B] Switched to Back to Work, IsOff = 0");
@@ -351,82 +348,323 @@ public class Restaurantdb {
 		System.out.println("Failed");
 	}
 
-	public void createCustomer() {
-		System.out.println("Can we have your first name and last name, please?");
-		Scanner firstN = new Scanner(System.in);
-		System.out.print("Please enter your First Name: ");
-		String firstName = firstN.nextLine();
-		Scanner lastN = new Scanner(System.in);
-		System.out.print("Please enter your Last Name: ");
-		String lastName = lastN.nextLine();
-		System.out.println("is your name " + firstName + " " + lastName + " correct?");
-		System.out.println("[A] Yes");
-		System.out.println("[B] No");
-		Scanner optionScan = new Scanner(System.in);
-		String cusInput = optionScan.nextLine();
-		if (cusInput.equals("A".toLowerCase())) {
-			System.out.println("Please enter your phone number: ");
-			Scanner phoneN = new Scanner(System.in);
-			String phoneNumber = phoneN.next(); // Will match with database later
-
-			try {
-				PreparedStatement stmt = conn.prepareStatement("INSERT INTO Customer(name, phoneNum) VALUES (?,?)");
-				stmt.setString(1, firstName + " " + lastName);
-				stmt.setString(2, phoneNumber);
-				stmt.executeUpdate();
-			} catch (Exception e) {
-				System.out.println(e);
+	public void customerMenu() {
+		displayTable("customer");
+		Scanner scanner = new Scanner(System.in);
+		boolean endFlag = false;
+		while (endFlag != true) {
+			System.out.println("<<Customer Menu>>");
+			System.out.println("[A] Insert Customer into DB");
+			// System.out.println("[B] Delete Customer from DB");
+			System.out.println("[C] Update Customer Info");
+			System.out.println("[M] MainMenu");
+			String input = scanner.nextLine().toLowerCase();
+			switch (input) {
+			case "a":
+				insertCustomerMenu();
+				break;
+			// case "b":
+			// deleteCustomerMenu();
+			// break;
+			case "c":
+				updateCustomerInfoMenu();
+				break;
+			case "m":
+				endFlag = true;
+				break;
+			default:
+				menuError();
 			}
-
 		}
-
 	}
 
-	public void returnCustomer() {
+	public int insertCustomer(String name, String phoneNum) {
+		int result = 0;
+		try {
+			PreparedStatement pstmt = conn.prepareStatement("INSERT INTO Customer (name, phoneNum) VALUES (?,?)");
+			pstmt.setString(1, name);
+			pstmt.setString(2, phoneNum);
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("Query Error: " + e.getStackTrace());
+		}
+		return result;
+	}
+
+	public void insertCustomerMenu() {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("<<Insert Customer>>\n");
+
+		System.out.println("Customer Name?");
+		String name = scanner.nextLine();
+
+		System.out.println("Customer Phone Number?");
+		String phoneNum = scanner.nextLine();
+
+		if (insertCustomer(name, phoneNum) != 0)
+			success();
+		else
+			fail();
+	}
+
+	// public int deleteCustomer(String name, String phoneNum) {
+	// int result = 0;
+	// try {
+	// PreparedStatement pstmt = conn.prepareStatement("DELETE FROM Customer WHERE
+	// name=? and phoneNum=?");
+	// pstmt.setString(1, name);
+	// pstmt.setString(2, phoneNum);
+	// result = pstmt.executeUpdate();
+	// } catch (SQLException e) {
+	// System.out.println("Query Error: " + e.getStackTrace());
+	// }
+	// return result;
+	// }
+
+	// public void deleteCustomerMenu() {
+	// Scanner scanner = new Scanner(System.in);
+	// System.out.println("<<Delete Customer>>\n");
+
+	// System.out.println("Customer Name?");
+	// String name = scanner.nextLine();
+
+	// System.out.println("Customer Phone Number?");
+	// String phoneNum = scanner.nextLine();
+
+	// if (deleteCustomer(name, phoneNum) != 0)
+	// success();
+	// else
+	// fail();
+	// }
+
+	public int updateCustomer(String name, String phoneNum, String newPhoneNum) {
+		int result = 0;
+		try {
+			PreparedStatement pstmt = conn
+					.prepareStatement("Update Customer set phoneNum=? where name=? and phoneNum=?");
+			pstmt.setString(1, newPhoneNum);
+			pstmt.setString(2, name);
+			pstmt.setString(3, phoneNum);
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("Query Error: " + e.getStackTrace());
+		}
+		return result;
+	}
+
+	public void updateCustomerInfoMenu() {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("<<Update Customer IsOff>>\n");
+
+		System.out.println("Customer Name?");
+		String name = scanner.nextLine();
+
+		System.out.println("Customer Phone Number?");
+		String phoneNum = scanner.nextLine();
+
+		System.out.println("Customer New Phone Number?");
+		String newPhoneNum = scanner.nextLine();
+
+		if (updateCustomer(name, phoneNum, newPhoneNum) != 0)
+			success();
+		else
+			fail();
+	}
+
+	public void reservationMenu() {
+		displayTable("reservations");
+		Scanner scanner = new Scanner(System.in);
+		boolean endFlag = false;
+		while (endFlag != true) {
+			System.out.println("<<Reservation Menu>>");
+			System.out.println("[A] Make Reservation into DB");
+			System.out.println("[B] Delete Reservation from DB");
+			System.out.println("[C] Update Reservation Info");
+			System.out.println("[M] MainMenu");
+			String input = scanner.nextLine().toLowerCase();
+			switch (input) {
+			case "a":
+				makeReservationMenu();
+				break;
+			case "b":
+				deleteReservationMenu();
+				break;
+			case "c":
+				updateReservationInfoMenu();
+				break;
+			case "m":
+				endFlag = true;
+				break;
+			default:
+				menuError();
+			}
+		}
+	}
+
+	public int makeReservationReturnCustomer(String name, String phoneNum, int numTable, String dateTime) {
+		int result = 0;
+		int result2 = 0;
+		int cID = 0;
+		try {
+			Statement stmt = conn.createStatement();
+			String query = "select cID from customer WHERE name = \"" + name + "\" and phoneNum = " + phoneNum;
+			ResultSet rs = stmt.executeQuery(query);
+			if (rs.next()) {
+				result = 1;
+				cID = rs.getInt("cID");
+			}
+			PreparedStatement pstmt = conn.prepareStatement(
+					"Insert INTO reservations (numOfTable, timeReserved, cID, updatedAt) VALUES (?,?,?,now())");
+			pstmt.setInt(1, numTable);
+			pstmt.setString(2, dateTime);
+			pstmt.setInt(3, cID);
+			result2 = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("Query Error: " + e.getStackTrace());
+		}
+		return result + result2;
+	}
+
+	public void makeReservationNewCustomer(String name, String phoneNum, int numTable, String dateTime) {
+		if (insertCustomer(name, phoneNum) != 0)
+			success();
+		else
+			fail();
+		makeReservationReturnCustomer(name, phoneNum, numTable, dateTime);
+	}
+
+	public void makeReservationReturnCustomerMenu() {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Welcome back, thank you for choosing DB restaurant");
+		System.out.println("Name?");
+		String name = scanner.nextLine();
 
 		System.out.println("Can we have your phone number, please? ");
-		Scanner phoneN = new Scanner(System.in);
-		String phoneNumber = phoneN.next(); // Will match with database later
-		reservationOption();
+		String phoneNum = scanner.nextLine();
 
+		System.out.println("Number of table, please? (ex: 1, 2, 3 ..)");
+		int numTable = scanner.nextInt();
+		String dummy = scanner.nextLine(); // Consumes "\n"
+
+		System.out.println("Reservation date and time, please? (ex: 2018-12-31 17:30:00)");
+		String dateTime = scanner.nextLine();
+
+		if (makeReservationReturnCustomer(name, phoneNum, numTable, dateTime) != 0)
+			success();
+		else
+			fail();
 	}
 
-	public void customerPrompt() {
+	public void makeReservationNewCustomerMenu() {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Thank you for choosing DB Restaurant");
+		System.out.println("Name?");
+		String name = scanner.nextLine();
+
+		System.out.println("Can we have your phone number, please? ");
+		String phoneNum = scanner.nextLine();
+
+		System.out.println("Number of table, please? (ex: 1, 2, 3 ..)");
+		int numTable = scanner.nextInt();
+		String dummy = scanner.nextLine(); // Consumes "\n"
+
+		System.out.println("Reservation date and time, please? (ex: 2018-12-31 17:30:00)");
+		String dateTime = scanner.nextLine();
+		makeReservationNewCustomer(name, phoneNum, numTable, dateTime);
+	}
+
+	public void makeReservationMenu() {
+		Scanner customerScan = new Scanner(System.in);
+		System.out.println("<<Make Reservation>>\n");
+
 		System.out.println("Are you new customer?");
 		System.out.println("Please select one option: ");
 		System.out.println("[A] Yes");
 		System.out.println("[B] No");
-		Scanner customerScan = new Scanner(System.in);
 		String cusInput = customerScan.nextLine().toLowerCase();
+
 		if (cusInput.equals("a")) {
-			System.out.println("Thank you for choosing DB Restaurant");
-			createCustomer();
+			makeReservationNewCustomerMenu();
 		} else if (cusInput.equals("b")) {
-			System.out.println("Welcome back, thank you for choosing DB restaurant");
-			returnCustomer();
+			makeReservationReturnCustomerMenu();
 		} else {
 			System.out.println("That's not a valid answer");
 		}
+	}
+
+	public int deleteReservation(String name, String phoneNum) {
+		int result = 0;
+		int cID = 0;
+		try {
+			Statement stmt = conn.createStatement();
+			String query = "select cID from customer WHERE name = \"" + name + "\" and phoneNum = " + phoneNum;
+			ResultSet rs = stmt.executeQuery(query);
+			if (rs.next()) {
+				result = 1;
+				cID = rs.getInt("cID");
+			}
+
+			PreparedStatement pstmt = conn.prepareStatement("DELETE FROM reservations WHERE cID=?");
+			pstmt.setInt(1, cID);
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("Query Error: " + e.getStackTrace());
+		}
+		return result;
+	}
+
+	public void deleteReservationMenu() {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("<<Delete Reservation>>\n");
+
+		System.out.println("Name?");
+		String name = scanner.nextLine();
+
+		System.out.println("Phone Number?");
+		String phoneNum = scanner.nextLine();
+
+		if (deleteReservation(name, phoneNum) != 0)
+			success();
+		else
+			fail();
 
 	}
 
-	public void reservationOption() {
-		System.out.println("Please select one of the options below: ");
-		System.out.println("[A] Make a new reservation");
-		System.out.println("[B] Current drop in ");
-		System.out.println("[C] Update personal information ");
-		Scanner selectOption = new Scanner(System.in);
-		String optionS = selectOption.nextLine();
-
+	public int updateReservation(String name, String phoneNum, String reservedDateTime, String newDateTime) {
+		int result = 0;
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(
+					"Update reservations set timeReserved = ? where cID in (select cid from Customer where name = ? and phoneNum= ?) and timeReserved = ?");
+			pstmt.setString(1, newDateTime);
+			pstmt.setString(2, name);
+			pstmt.setString(3, phoneNum);
+			pstmt.setString(4, reservedDateTime);
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("Query Error: " + e.getStackTrace());
+		}
+		return result;
 	}
 
-	/**
-	 * main method prompting the user
-	 * 
-	 * @param args
-	 */
-	// public static void main(String[] args) {
-	//
-	// }
+	public void updateReservationInfoMenu() {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("<<Update Reservation IsOff>>\n");
 
+		System.out.println("Name?");
+		String name = scanner.nextLine();
+
+		System.out.println("Phone Number?");
+		String phoneNum = scanner.nextLine();
+
+		System.out.println("Reserved Date and time?");
+		String reservedDateTime = scanner.nextLine();
+
+		System.out.println("New Date and time?");
+		String newDateTime = scanner.nextLine();
+
+		if (updateReservation(name, phoneNum, reservedDateTime, newDateTime) != 0)
+			success();
+		else
+			fail();
+	}
 }
