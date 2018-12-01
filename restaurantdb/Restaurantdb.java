@@ -19,10 +19,39 @@ public class Restaurantdb {
 					"jdbc:mysql://localhost:3306/RestaurantReservation?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&autoReconnect=true&useSSL=false",
 					"root", "faith114");
 
+			// triggers not working yet
+			// serverOffTrigger();
+			// serverOnTrigger();
 		} catch (Exception e) {
 			System.out.println(e);
 		}
 	}
+
+	// public void serverOffTrigger() throws SQLException {
+	// String trigger = "CREATE TRIGGER ServerOff\n" + "AFTER Update ON Employee\n"
+	// + "FOR EACH ROW\n"
+	// + "WHEN NEW.isOff = 1\n" + "BEGIN\n" + "\tUPDATE Restaurant\n"
+	// + "\tSET subServerID = OLD.sID and sID = ( select min(E1.sID) " + "from
+	// Employee E1 "
+	// + "where E1.isOff = 0) " + "WHERE sID = NEW.sID; " + "END;";
+
+	// Statement stmt = conn.createStatement();
+	// stmt.execute(trigger);
+	// }
+
+	// public void serverOnTrigger() throws SQLException {
+	// conn.createStatement().execute("DROP TRIGGER IF EXISTS ServerOn");
+
+	// StringBuffer trigger = new StringBuffer();
+	// trigger.append("CREATE TRIGGER ServerOn AFTER Update ON Employee ");
+	// trigger.append("FOR EACH ROW WHEN NEW.isOff = false\nBEGIN");
+	// trigger.append("UPDATE Restaurant SET subServerID = NULL and sID = NEW.sID
+	// ");
+	// trigger.append("WHERE subServerID = NEW.sID;\n");
+	// trigger.append("END; ");
+
+	// conn.createStatement().execute(trigger.toString());
+	// }
 
 	public void closeConnection() {
 		try {
@@ -34,40 +63,36 @@ public class Restaurantdb {
 		}
 	}
 
-	public void selectAll(String tableName) {
+	public void displayTable(String tableName) {
 		try {
 			String query = "SELECT * FROM " + tableName;
 			Statement stmt = conn.createStatement();
-			ResultSet rst = stmt.executeQuery(query);
-			ResultSetMetaData rsmt = rst.getMetaData();
+			ResultSet rs = stmt.executeQuery(query);
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int colNumber = rsmd.getColumnCount();
 
-			// Print column names
-			String output = "";
-			System.out.println(rsmt.getColumnCount());
-			for (int i = 1; i <= rsmt.getColumnCount(); i++) {
-				output = output + rsmt.getColumnName(i);
-				if (i != rsmt.getColumnCount()) {
-					output = output + "\t";
+			System.out.println("<< " + tableName + " DB >>");
+			while (rs.next()) {
+				for (int i = 1; i <= colNumber; i++) {
+					if (i > 1)
+						System.out.print("\t");
+					String colVal = rs.getString(i);
+					System.out.print(rsmd.getColumnName(i) + ": " + colVal);
 				}
+				System.out.println("");
 			}
-			System.out.println("All Tuples from " + tableName);
-			System.out.println(output + "\n");
-
-			// # incomplete #
-			// Print tuples
-			// while(rst.next()) {
-			// }
+			System.out.println();
 		} catch (SQLException e) {
 			System.out.println("Query Error: " + e.getStackTrace());
 		}
 	}
 
 	public void restaurantMenu() {
-		// selectAll("Restaurant"); print all tuples for debug
+		displayTable("restaurant");
 		Scanner scanner = new Scanner(System.in);
 		boolean endFlag = false;
 		while (endFlag != true) {
-			System.out.println("<<Restaurant Table Menu>>\n");
+			System.out.println("<<Restaurant Table Menu>>");
 			System.out.println("[A] Insert Restaurant Table into DB");
 			System.out.println("[B] Delete Restaurant Table from DB");
 			System.out.println("[C] Update Restaurant Table Server Back");
@@ -110,7 +135,6 @@ public class Restaurantdb {
 	public void insertRestaurantMenu() {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("<<Insert Restaurant Table>>\n");
-
 		System.out.println("Occupied?");
 		System.out.println("[A] Yes");
 		System.out.println("[B] No");
@@ -186,14 +210,15 @@ public class Restaurantdb {
 	}
 
 	public void employeeMenu() {
-		// selectAll("employee"); print all tuples for debug
+		displayTable("employee");
 		Scanner scanner = new Scanner(System.in);
 		boolean endFlag = false;
 		while (endFlag != true) {
-			System.out.println("<<Employee Menu>>\n");
+			System.out.println("<<Employee Menu>>");
 			System.out.println("[A] Insert Employee into DB");
 			System.out.println("[B] Delete Employee from DB");
 			System.out.println("[C] Update Employee IsOff");
+			System.out.println("[D] Find Employee(s) W/O Assigned Table");
 			System.out.println("[M] MainMenu");
 			String input = scanner.nextLine().toLowerCase();
 			switch (input) {
@@ -206,12 +231,35 @@ public class Restaurantdb {
 			case "c":
 				updateEmployeeIsOffMenu();
 				break;
+			case "d":
+				findEmployeeWOTable();
+				break;
 			case "m":
 				endFlag = true;
 				break;
 			default:
 				menuError();
 			}
+		}
+	}
+
+	public void findEmployeeWOTable() {
+		try {
+			Statement stmt = conn.createStatement();
+			String query = "select sID, name from employee e1 WHERE not exists (select sid from Restaurant where sid = e1.sid)";
+			ResultSet rs = stmt.executeQuery(query);
+
+			if (rs.next()) {
+				System.out.println("<< Employee(s) without Assigned Table >>");
+				System.out.println("sID: " + rs.getInt("sID") + "\t" + "name: " + rs.getString("name"));
+			}
+
+			while (rs.next()) {
+				System.out.println("sID: " + rs.getInt("sID") + "\t" + "name: " + rs.getString("name"));
+			}
+			System.out.println();
+		} catch (SQLException e) {
+			System.out.println("Query Error: " + e.getStackTrace());
 		}
 	}
 
