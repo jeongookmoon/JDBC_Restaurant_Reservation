@@ -95,7 +95,6 @@ public class Restaurantdb {
 			System.out.println("<<Restaurant Table Menu>>");
 			System.out.println("[A] Insert Restaurant Table into DB");
 			System.out.println("[B] Delete Restaurant Table from DB");
-			System.out.println("[C] Update Restaurant Table Server Back");
 			System.out.println("[M] MainMenu");
 			String input = scanner.nextLine().toLowerCase();
 			switch (input) {
@@ -104,9 +103,6 @@ public class Restaurantdb {
 				break;
 			case "b":
 				deleteRestaurantMenu();
-				break;
-			case "c":
-				updateRestaurantServerBackMenu();
 				break;
 			case "m":
 				endFlag = true;
@@ -180,33 +176,6 @@ public class Restaurantdb {
 		else
 			fail();
 
-	}
-
-	public int updateRestaurantServerBack(int tID) {
-		int result = 0;
-		try {
-			PreparedStatement pstmt = conn.prepareStatement("Update Restaurant set subServerID=? where tID=?");
-			pstmt.setNull(1, 1);
-			pstmt.setInt(2, tID);
-			result = pstmt.executeUpdate();
-		} catch (SQLException e) {
-			System.out.println("Query Error: " + e.getStackTrace());
-		}
-		return result;
-	}
-
-	public void updateRestaurantServerBackMenu() {
-		Scanner scanner = new Scanner(System.in);
-		System.out.println("<<Update Restaurant DB>>\n");
-
-		System.out.println("Table ID?");
-		int tID = scanner.nextInt();
-		String dummy = scanner.nextLine(); // Consumes "\n"
-
-		if (updateRestaurantServerBack(tID) != 0)
-			success();
-		else
-			fail();
 	}
 
 	public void employeeMenu() {
