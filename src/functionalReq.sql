@@ -149,3 +149,33 @@ BEGIN
                 where Customer.name = name and Customer.phoneNum = phoneNum);
 END //
 DELIMITER ;
+
+
+/*Archiving Reservations*/
+
+DELIMITER //
+CREATE PROCEDURE archiveReservations (IN cutOff VARCHAR)
+BEGIN
+    INSERT INTO ReservationsArchive(numOfTable, timeReserved, cID, updatedAt)
+    SELECT *
+    FROM Reservations
+    WHERE Reservations.updatedAt < cutOff;
+
+    DELETE FROM Reservations
+    WHERE Reservations.updatedAt < cutOff;
+END//
+DELIMITER ;
+
+/*Archiving CurrentDropIns*/
+DELIMITER //
+CREATE PROCEDURE archiveCurrentDropIns (IN cutOff VARCHAR)
+BEGIN
+    INSERT INTO CurrentDropInsArchive(numOfTable, timeReserved, cID, updatedAt)
+    SELECT *
+    FROM CurrentDropIns
+    WHERE CurrentDropIns.updatedAt < cutOff;
+
+    DELETE FROM CurrentDropIns
+    WHERE CurrentDropIns.updatedAt < cutOff;
+END//
+DELIMITER ;
