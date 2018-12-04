@@ -36,7 +36,7 @@ CREATE TABLE Reservations(
   timeReserved VARCHAR(50),
   cID INT,
   updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  primary key (cID, numOfTable),
+  primary key (cID, timeReserved),
   FOREIGN KEY (cID) REFERENCES Customer(cID) on update cascade
 );
 
@@ -44,16 +44,15 @@ CREATE TABLE ReservationsArchive(
   numOfTable INT,
   timeReserved VARCHAR(50),
   cID INT,
-  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  updatedAt DATETIME
 );
 
 CREATE TABLE CurrentDropIns(
   numOfTable INT,
   timeDropIn VARCHAR(50),
   cID INT,
-  queueID INT,
   updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  primary key (cID, numOfTable),
+  primary key (cID, timeDropIn),
   FOREIGN KEY (cID) REFERENCES Customer(cID) on update cascade
 );
 
@@ -61,8 +60,7 @@ CREATE TABLE CurrentDropInsArchive(
   numOfTable INT,
   timeDropIn VARCHAR(50),
   cID INT,
-  queueID INT,
-  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  updatedAt DATETIME
 );
 
 # if the below data path doesn't work, use the full path from your machine
