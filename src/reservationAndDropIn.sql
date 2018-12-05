@@ -15,12 +15,12 @@ INSERT INTO Reservations(numOfTable, timeReserved, cID)
             (2, "00:21:30", 4);
 
 INSERT INTO CurrentDropIns(numOfTable, timeDropIn, cID)
-Values(1, "00:13:10", 1),
-      (1, "00:10:30", 7),
-      (1, "00:10:00", 5),
-      (2,"00:17:00", 8),
-      (1,"00:15:30", 1),
-      (1, "00:22:00", 2);
+Values(1, "00:13:10", 3),
+      (1, "00:10:30", 5),
+      (1, "00:10:00", 7),
+      (2,"00:17:00", 1),
+      (1,"00:15:30", 3),
+      (1, "00:22:00", 6);
 
 INSERT INTO CurrentDropInsArchive(numOfTable,timeDropIn,cID, updatedAt)
 Values(2,"00:12:00",1, "2018-12-03 14:26:35"),

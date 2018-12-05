@@ -188,6 +188,8 @@ public class Restaurantdb {
 			System.out.println("[B] Delete Employee from DB");
 			System.out.println("[C] Update Employee IsOff");
 			System.out.println("[D] Find Employee(s) W/O Assigned Table");
+			System.out.println("[E] Archive Reservations");
+			System.out.println("[F] Archive CurrentDropIns");
 			System.out.println("[M] MainMenu");
 			String input = scanner.nextLine().toLowerCase();
 			switch (input) {
@@ -203,12 +205,56 @@ public class Restaurantdb {
 			case "d":
 				findEmployeeWOTable();
 				break;
+			case "e":
+				archiveReservations();
+				break;
+			case "f":
+				archiveCurrentDropIns();
+				break;
 			case "m":
 				endFlag = true;
 				break;
 			default:
 				menuError();
 			}
+		}
+	}
+
+	public void archiveReservations(){
+		Scanner in = new Scanner(System.in);
+		System.out.println("<<Archive Reservations>>\n");
+
+		System.out.println("Enter cutoff date");
+		String cutOff = in.nextLine();
+
+		try {
+				String archiveReservations = "{call archiveReservations(?)}";
+				CallableStatement cstmst = conn.prepareCall(archiveReservations);
+				cstmst.setString(1, cutOff);
+				cstmst.execute();
+				success();
+		}catch (SQLException e) {
+			fail();
+			System.out.println("Query Error: "+ e.getStackTrace());
+		}
+	}
+
+	public void archiveCurrentDropIns(){
+		Scanner in = new Scanner(System.in);
+		System.out.println("<<Archive CurrentDropIns>>\n");
+
+		System.out.println("Enter cutoff date");
+		String cutOff = in.nextLine();
+
+		try {
+				String archiveCurrentDropIns = "{call archiveCurrentDropIns(?)}";
+				CallableStatement cstmst = conn.prepareCall(archiveCurrentDropIns);
+				cstmst.setString(1, cutOff);
+				cstmst.execute();
+				success();
+		}catch (SQLException e) {
+			fail();
+			System.out.println("Query Error: "+ e.getStackTrace());
 		}
 	}
 
