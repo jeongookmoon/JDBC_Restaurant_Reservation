@@ -153,10 +153,9 @@ DELIMITER ;
 
 /*Archiving Reservations*/
 
-DELIMITER //
-CREATE PROCEDURE archiveReservations (IN cutOff VARCHAR)
+CREATE PROCEDURE archiveReservations (IN cutOff VARCHAR(50))
 BEGIN
-    INSERT INTO ReservationsArchive(numOfTable, timeReserved, cID, updatedAt)
+    INSERT INTO ReservationsArchive
     SELECT *
     FROM Reservations
     WHERE Reservations.updatedAt < cutOff;
@@ -168,9 +167,9 @@ DELIMITER ;
 
 /*Archiving CurrentDropIns*/
 DELIMITER //
-CREATE PROCEDURE archiveCurrentDropIns (IN cutOff VARCHAR)
+CREATE PROCEDURE archiveCurrentDropIns (IN cutOff VARCHAR(50))
 BEGIN
-    INSERT INTO CurrentDropInsArchive(numOfTable, timeReserved, cID, updatedAt)
+    INSERT INTO CurrentDropInsArchive
     SELECT *
     FROM CurrentDropIns
     WHERE CurrentDropIns.updatedAt < cutOff;

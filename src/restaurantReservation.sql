@@ -63,6 +63,52 @@ CREATE TABLE CurrentDropInsArchive(
   updatedAt DATETIME
 );
 
+/*Archiving Reservations*/
+DELIMITER //
+CREATE PROCEDURE archiveReservations (IN cutOff VARCHAR(50))
+BEGIN
+    INSERT INTO ReservationsArchive
+    SELECT *
+    FROM Reservations
+    WHERE Reservations.updatedAt < cutOff;
+
+    DELETE FROM Reservations
+    WHERE Reservations.updatedAt < cutOff;
+END//
+DELIMITER ;
+
+/*Archiving CurrentDropIns*/
+DELIMITER //
+CREATE PROCEDURE archiveCurrentDropIns (IN cutOff VARCHAR(50))
+BEGIN
+    INSERT INTO CurrentDropInsArchive
+    SELECT *
+    FROM CurrentDropIns
+    WHERE CurrentDropIns.updatedAt < cutOff;
+
+    DELETE FROM CurrentDropIns
+    WHERE CurrentDropIns.updatedAt < cutOff;
+END//
+DELIMITER ;
+
+/*Find all reservations and current drop in of a particular  customer*/
+DELIMITER //
+CREATE PROCEDURE allDropInAndReservation (IN name VARCHAR, IN phoneNum VARCHAR)
+BEGIN
+  select numOfTable, timeDropIn
+  from CurrentDropIns
+  where cid in (select cid
+                from Customer
+                where Customer.name = name and Customer.phoneNum = phoneNum);
+
+  select numOfTable, timeReserved
+  from reservations
+  cid in (select cid
+                from Customer
+                where Customer.name = name and Customer.phoneNum = phoneNum);
+END //
+DELIMITER ;
+
 # if the below data path doesn't work, use the full path from your machine
 LOAD DATA LOCAL INFILE '../data/employee.txt' INTO TABLE Employee;
 LOAD DATA LOCAL INFILE '../data/customer.txt' INTO TABLE Customer;
