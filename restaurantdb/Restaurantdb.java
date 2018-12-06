@@ -17,7 +17,7 @@ public class Restaurantdb {
 			// DriverManager.useSSL=false;
 			conn = DriverManager.getConnection(
 					"jdbc:mysql://localhost:3306/RestaurantReservation?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&autoReconnect=true&useSSL=false",
-					"root", "faith114");
+					"root", "Xayeuxa1110!");
 
 			// triggers not working yet
 			// serverOffTrigger();
@@ -62,7 +62,10 @@ public class Restaurantdb {
 			System.out.println("Query Error:" + e.getStackTrace());
 		}
 	}
-
+	
+	/*
+	 * Displaying table
+	 */
 	public void displayTable(String tableName) {
 		try {
 			String query = "SELECT * FROM " + tableName;
@@ -86,7 +89,9 @@ public class Restaurantdb {
 			System.out.println("Query Error: " + e.getStackTrace());
 		}
 	}
-
+	/*
+	 * Restaurant options
+	 */
 	public void restaurantMenu() {
 		displayTable("restaurant");
 		Scanner scanner = new Scanner(System.in);
@@ -188,6 +193,8 @@ public class Restaurantdb {
 			System.out.println("[B] Delete Employee from DB");
 			System.out.println("[C] Update Employee IsOff");
 			System.out.println("[D] Find Employee(s) W/O Assigned Table");
+			System.out.println("[E] Check Current Drops In");
+			System.out.println("[j] Check Average Table Requests");
 			System.out.println("[M] MainMenu");
 			String input = scanner.nextLine().toLowerCase();
 			switch (input) {
@@ -203,12 +210,58 @@ public class Restaurantdb {
 			case "d":
 				findEmployeeWOTable();
 				break;
+			case "e":
+				checkCurrentDropInNoReservation();
+				break;
+			case "j":
+				checkAverageTableRequest();
+				break;
 			case "m":
 				endFlag = true;
 				break;
 			default:
 				menuError();
 			}
+		}
+	}
+	public void checkAverageTableRequest() {
+		try {
+			Statement stmt =conn.createStatement();
+			String query = "select avg(numOfTable) from Reservations, currentdropins";
+			ResultSet rs = stmt.executeQuery(query);
+			
+			if (rs.next()) {
+				System.out.println("<< Average Table Requests >>");
+				System.out.println("Average Table: " + rs.getInt("Numoftable"));
+			}
+
+			while (rs.next()) {
+				System.out.println("Average Table: " + rs.getInt("Numoftable"));
+			}
+			System.out.println();
+		} catch (SQLException e) {
+			System.out.println("Query Error: " + e.getStackTrace());
+		}
+	}
+
+	
+	public void checkCurrentDropInNoReservation() {
+		try {
+			Statement stmt =conn.createStatement();
+			String query = "select cID, name from customer WHERE customer.cID IN (select cID from currentdropins where cID IN (select cID from Reservations))";
+			ResultSet rs = stmt.executeQuery(query);
+			
+			if (rs.next()) {
+				System.out.println("<< Current Drop In Customer >>");
+				System.out.println("cID: " + rs.getInt("cID") + "\t" + "name: " + rs.getString("name"));
+			}
+
+			while (rs.next()) {
+				System.out.println("cID: " + rs.getInt("cID") + "\t" + "name: " + rs.getString("name"));
+			}
+			System.out.println();
+		} catch (SQLException e) {
+			System.out.println("Query Error: " + e.getStackTrace());
 		}
 	}
 
