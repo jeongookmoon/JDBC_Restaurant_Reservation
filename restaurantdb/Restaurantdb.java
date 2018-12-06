@@ -62,7 +62,7 @@ public class Restaurantdb {
 			System.out.println("Query Error:" + e.getStackTrace());
 		}
 	}
-	
+
 	/*
 	 * Displaying table
 	 */
@@ -229,7 +229,7 @@ public class Restaurantdb {
 			Statement stmt =conn.createStatement();
 			String query = "select avg(numOfTable) from Reservations, currentdropins";
 			ResultSet rs = stmt.executeQuery(query);
-			
+
 			if (rs.next()) {
 				System.out.println("<< Average Table Requests >>");
 				System.out.println("Average Table: " + rs.getInt("Numoftable"));
@@ -244,13 +244,13 @@ public class Restaurantdb {
 		}
 	}
 
-	
+
 	public void checkCurrentDropInNoReservation() {
 		try {
 			Statement stmt =conn.createStatement();
 			String query = "select cID, name from customer WHERE customer.cID IN (select cID from currentdropins where cID IN (select cID from Reservations))";
 			ResultSet rs = stmt.executeQuery(query);
-			
+
 			if (rs.next()) {
 				System.out.println("<< Current Drop In Customer >>");
 				System.out.println("cID: " + rs.getInt("cID") + "\t" + "name: " + rs.getString("name"));
@@ -262,6 +262,44 @@ public class Restaurantdb {
 			System.out.println();
 		} catch (SQLException e) {
 			System.out.println("Query Error: " + e.getStackTrace());
+		}
+	}
+
+	public void archiveReservations(){
+		Scanner in = new Scanner(System.in);
+		System.out.println("<<Archive Reservations>>\n");
+
+		System.out.println("Enter cutoff date");
+		String cutOff = in.nextLine();
+
+		try {
+				String archiveReservations = "{call archiveReservations(?)}";
+				CallableStatement cstmst = conn.prepareCall(archiveReservations);
+				cstmst.setString(1, cutOff);
+				cstmst.execute();
+				success();
+		}catch (SQLException e) {
+			fail();
+			System.out.println("Query Error: "+ e.getStackTrace());
+		}
+	}
+
+	public void archiveCurrentDropIns(){
+		Scanner in = new Scanner(System.in);
+		System.out.println("<<Archive CurrentDropIns>>\n");
+
+		System.out.println("Enter cutoff date");
+		String cutOff = in.nextLine();
+
+		try {
+				String archiveCurrentDropIns = "{call archiveCurrentDropIns(?)}";
+				CallableStatement cstmst = conn.prepareCall(archiveCurrentDropIns);
+				cstmst.setString(1, cutOff);
+				cstmst.execute();
+				success();
+		}catch (SQLException e) {
+			fail();
+			System.out.println("Query Error: "+ e.getStackTrace());
 		}
 	}
 
