@@ -36,7 +36,7 @@ CREATE TABLE Reservations(
   timeReserved VARCHAR(50),
   cID INT,
   updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  primary key (cID, numOfTable),
+  primary key (cID, timeReserved),
   FOREIGN KEY (cID) REFERENCES Customer(cID) on update cascade
 );
 
@@ -44,16 +44,15 @@ CREATE TABLE ReservationsArchive(
   numOfTable INT,
   timeReserved VARCHAR(50),
   cID INT,
-  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  updatedAt DATETIME
 );
 
 CREATE TABLE CurrentDropIns(
   numOfTable INT,
   timeDropIn VARCHAR(50),
   cID INT,
-  queueID INT,
   updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  primary key (cID, numOfTable),
+  primary key (cID, timeDropIn),
   FOREIGN KEY (cID) REFERENCES Customer(cID) on update cascade
 );
 
@@ -61,9 +60,54 @@ CREATE TABLE CurrentDropInsArchive(
   numOfTable INT,
   timeDropIn VARCHAR(50),
   cID INT,
-  queueID INT,
-  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  updatedAt DATETIME
 );
+
+/*Archiving Reservations*/
+DELIMITER //
+CREATE PROCEDURE archiveReservations (IN cutOff VARCHAR(50))
+BEGIN
+    INSERT INTO ReservationsArchive
+    SELECT *
+    FROM Reservations
+    WHERE Reservations.updatedAt < cutOff;
+
+    DELETE FROM Reservations
+    WHERE Reservations.updatedAt < cutOff;
+END//
+DELIMITER ;
+
+/*Archiving CurrentDropIns*/
+DELIMITER //
+CREATE PROCEDURE archiveCurrentDropIns (IN cutOff VARCHAR(50))
+BEGIN
+    INSERT INTO CurrentDropInsArchive
+    SELECT *
+    FROM CurrentDropIns
+    WHERE CurrentDropIns.updatedAt < cutOff;
+
+    DELETE FROM CurrentDropIns
+    WHERE CurrentDropIns.updatedAt < cutOff;
+END//
+DELIMITER ;
+
+/*Find all reservations and current drop in of a particular  customer*/
+DELIMITER //
+CREATE PROCEDURE allDropInAndReservation (IN name VARCHAR, IN phoneNum VARCHAR)
+BEGIN
+  select numOfTable, timeDropIn
+  from CurrentDropIns
+  where cid in (select cid
+                from Customer
+                where Customer.name = name and Customer.phoneNum = phoneNum);
+
+  select numOfTable, timeReserved
+  from reservations
+  cid in (select cid
+                from Customer
+                where Customer.name = name and Customer.phoneNum = phoneNum);
+END //
+DELIMITER ;
 
 # if the below data path doesn't work, use the full path from your machine
 LOAD DATA LOCAL INFILE '../data/employee.txt' INTO TABLE Employee;
