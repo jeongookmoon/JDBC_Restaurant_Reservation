@@ -17,7 +17,7 @@ public class Restaurantdb {
 			// DriverManager.useSSL=false;
 			conn = DriverManager.getConnection(
 					"jdbc:mysql://localhost:3306/RestaurantReservation?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&autoReconnect=true&useSSL=false",
-					"root", "Xayeuxa1110!");
+					"root", "faith114");
 
 			// triggers not working yet
 			// serverOffTrigger();
@@ -28,27 +28,33 @@ public class Restaurantdb {
 	}
 
 	// public void serverOffTrigger() throws SQLException {
-	// String trigger = "CREATE TRIGGER ServerOff\n" + "AFTER Update ON Employee\n"
-	// + "FOR EACH ROW\n"
-	// + "WHEN NEW.isOff = 1\n" + "BEGIN\n" + "\tUPDATE Restaurant\n"
-	// + "\tSET subServerID = OLD.sID and sID = ( select min(E1.sID) " + "from
-	// Employee E1 "
-	// + "where E1.isOff = 0) " + "WHERE sID = NEW.sID; " + "END;";
+	// try {
+	// String trigger = "CREATE TRIGGER ServerOff " + "AFTER Update ON Employee " +
+	// "FOR EACH ROW " + "BEGIN "
+	// + "IF NEW.isOff = 1 THEN " + "UPDATE Restaurant "
+	// + "SET Restaurant.subServerID = NEW.sID and Restaurant.sID =" + "(select
+	// min(employee.sID) "
+	// + "where employee.isOff = 0); " + "END IF; " + "END ";
 
 	// Statement stmt = conn.createStatement();
-	// stmt.execute(trigger);
+	// stmt.executeQuery(trigger);
+	// } catch (SQLException e) {
+	// System.out.println("Error:" + e.getStackTrace());
+	// } finally {
+	// System.out.println("TRIGGER ServerOff Successfully Created\n");
+	// }
+
 	// }
 
 	// public void serverOnTrigger() throws SQLException {
 	// conn.createStatement().execute("DROP TRIGGER IF EXISTS ServerOn");
 
 	// StringBuffer trigger = new StringBuffer();
-	// trigger.append("CREATE TRIGGER ServerOn AFTER Update ON Employee ");
-	// trigger.append("FOR EACH ROW WHEN NEW.isOff = false\nBEGIN");
-	// trigger.append("UPDATE Restaurant SET subServerID = NULL and sID = NEW.sID
+	// trigger.append("DELIMITER $$ CREATE TRIGGER ServerOn AFTER Update ON Employee
 	// ");
-	// trigger.append("WHERE subServerID = NEW.sID;\n");
-	// trigger.append("END; ");
+	// trigger.append("FOR EACH ROW BEGIN IF NEW.isOff = 0 THEN ");
+	// trigger.append("UPDATE Restaurant SET subServerID = 0 and sID = NEW.sID ");
+	// trigger.append("WHERE subServerID = NEW.sID; END IF; END$$ DELIMITER ;");
 
 	// conn.createStatement().execute(trigger.toString());
 	// }
@@ -89,6 +95,7 @@ public class Restaurantdb {
 			System.out.println("Query Error: " + e.getStackTrace());
 		}
 	}
+
 	/*
 	 * Restaurant options
 	 */
@@ -224,9 +231,10 @@ public class Restaurantdb {
 			}
 		}
 	}
+
 	public void checkAverageTableRequest() {
 		try {
-			Statement stmt =conn.createStatement();
+			Statement stmt = conn.createStatement();
 			String query = "select avg(numOfTable) from Reservations, currentdropins";
 			ResultSet rs = stmt.executeQuery(query);
 
@@ -244,10 +252,9 @@ public class Restaurantdb {
 		}
 	}
 
-
 	public void checkCurrentDropInNoReservation() {
 		try {
-			Statement stmt =conn.createStatement();
+			Statement stmt = conn.createStatement();
 			String query = "select cID, name from customer WHERE customer.cID IN (select cID from currentdropins where cID IN (select cID from Reservations))";
 			ResultSet rs = stmt.executeQuery(query);
 
@@ -265,7 +272,7 @@ public class Restaurantdb {
 		}
 	}
 
-	public void archiveReservations(){
+	public void archiveReservations() {
 		Scanner in = new Scanner(System.in);
 		System.out.println("<<Archive Reservations>>\n");
 
@@ -273,18 +280,18 @@ public class Restaurantdb {
 		String cutOff = in.nextLine();
 
 		try {
-				String archiveReservations = "{call archiveReservations(?)}";
-				CallableStatement cstmst = conn.prepareCall(archiveReservations);
-				cstmst.setString(1, cutOff);
-				cstmst.execute();
-				success();
-		}catch (SQLException e) {
+			String archiveReservations = "{call archiveReservations(?)}";
+			CallableStatement cstmst = conn.prepareCall(archiveReservations);
+			cstmst.setString(1, cutOff);
+			cstmst.execute();
+			success();
+		} catch (SQLException e) {
 			fail();
-			System.out.println("Query Error: "+ e.getStackTrace());
+			System.out.println("Query Error: " + e.getStackTrace());
 		}
 	}
 
-	public void archiveCurrentDropIns(){
+	public void archiveCurrentDropIns() {
 		Scanner in = new Scanner(System.in);
 		System.out.println("<<Archive CurrentDropIns>>\n");
 
@@ -292,14 +299,14 @@ public class Restaurantdb {
 		String cutOff = in.nextLine();
 
 		try {
-				String archiveCurrentDropIns = "{call archiveCurrentDropIns(?)}";
-				CallableStatement cstmst = conn.prepareCall(archiveCurrentDropIns);
-				cstmst.setString(1, cutOff);
-				cstmst.execute();
-				success();
-		}catch (SQLException e) {
+			String archiveCurrentDropIns = "{call archiveCurrentDropIns(?)}";
+			CallableStatement cstmst = conn.prepareCall(archiveCurrentDropIns);
+			cstmst.setString(1, cutOff);
+			cstmst.execute();
+			success();
+		} catch (SQLException e) {
 			fail();
-			System.out.println("Query Error: "+ e.getStackTrace());
+			System.out.println("Query Error: " + e.getStackTrace());
 		}
 	}
 
