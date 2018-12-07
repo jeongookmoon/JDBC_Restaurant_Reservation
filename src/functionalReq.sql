@@ -106,7 +106,7 @@ WHERE cid in (select cid from Customer where name = ? and phoneNum= ?)
       and timeDropIn = ? ;
 
 /*When a server is off, their assigned tables needs to be assigned to another server*/
-DELIMITER $$
+DELIMITER //
 CREATE TRIGGER ServerOff
     AFTER Update ON Employee
     FOR EACH ROW
@@ -118,12 +118,12 @@ BEGIN
          from employee
          where employee.isOff = 0);
     END IF;
-END$$
+END//
 DELIMITER ;
 
 /*When a server is back to work (when isOff is updated to 0),
 tables need to be reassigned to them*/
-DELIMITER $$
+DELIMITER //
 CREATE TRIGGER ServerOn
     AFTER Update ON Employee
     FOR EACH ROW
@@ -133,13 +133,13 @@ BEGIN
     SET subServerID = 0 and sID = NEW.sID
     WHERE subServerID = NEW.sID;
     END IF;
-END$$
+END//
 DELIMITER ;
 
 
 
 /*Find all reservations and current drop in of a particular  customer*/
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE allDropInAndReservation (IN name VARCHAR, IN phoneNum VARCHAR)
 BEGIN
   select numOfTable, timeDropIn
@@ -153,13 +153,13 @@ BEGIN
   cid in (select cid
                 from Customer
                 where Customer.name = name and Customer.phoneNum = phoneNum);
-END $$
+END //
 DELIMITER ;
 
 
 /*Archiving Reservations*/
 
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE archiveReservations (IN cutOff VARCHAR)
 BEGIN
     INSERT INTO ReservationsArchive(numOfTable, timeReserved, cID, updatedAt)
@@ -169,11 +169,11 @@ BEGIN
 
     DELETE FROM Reservations
     WHERE Reservations.updatedAt < cutOff;
-END$$
+END//
 DELIMITER ;
 
 /*Archiving CurrentDropIns*/
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE archiveCurrentDropIns (IN cutOff VARCHAR)
 BEGIN
     INSERT INTO CurrentDropInsArchive(numOfTable, timeReserved, cID, updatedAt)
@@ -183,5 +183,5 @@ BEGIN
 
     DELETE FROM CurrentDropIns
     WHERE CurrentDropIns.updatedAt < cutOff;
-END$$
+END//
 DELIMITER ;
