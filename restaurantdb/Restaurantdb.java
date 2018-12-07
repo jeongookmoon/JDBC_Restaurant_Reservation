@@ -193,8 +193,10 @@ public class Restaurantdb {
 			System.out.println("[B] Delete Employee from DB");
 			System.out.println("[C] Update Employee IsOff");
 			System.out.println("[D] Find Employee(s) W/O Assigned Table");
-			System.out.println("[E] Check Current Drops In");
-			System.out.println("[j] Check Average Table Requests");
+			System.out.println("[E] Check Current Drops In Customer");
+			System.out.println("[J] Check Average Table Requests");
+			System.out.println("[P] Complete list of Reservations and Drop Ins");
+			System.out.println("[H] Check Customer with more than one Reservations");
 			System.out.println("[M] MainMenu");
 			String input = scanner.nextLine().toLowerCase();
 			switch (input) {
@@ -216,6 +218,12 @@ public class Restaurantdb {
 			case "j":
 				checkAverageTableRequest();
 				break;
+			case "p":
+				checkListReservationsNdropins();
+				break;
+			case "h":
+				checkCustomerManyReservation();
+				break;
 			case "m":
 				endFlag = true;
 				break;
@@ -224,19 +232,63 @@ public class Restaurantdb {
 			}
 		}
 	}
+	//Task 1 customer with more than one reservation, does not display the output
+	public void checkCustomerManyReservation() {
+		try {
+			Statement stmt =conn.createStatement();
+			String query = "select name from Reservations, Customer where Customer.cID = Reservations.cID group by customer.cID having count(*)>1";
+			ResultSet rs = stmt.executeQuery(query);
+
+			if (rs.next()) {
+				System.out.println("<< List of Customers with more than one reservation >>");
+				System.out.println("name: " + rs.getString("name"));
+			}
+
+			while (rs.next()) {
+				System.out.println("name: " + rs.getString("name"));
+			}
+			System.out.println();
+		} catch (SQLException e) {
+			System.out.println("Query Error: " + e.getStackTrace());
+		}
+	}
+	//Task 4 not working query error
+	public void checkListReservationsNdropins() {
+		try {
+			Statement stmt =conn.createStatement();
+			String query = "select distinct cID, name from Customer FULL OUTER JOIN Reservations on Customer.cID = Reservations.cID UNION select distinct cID, name from Customer FULL OUTER JOIN CurrentDropIns on Customer.cID = CurrentDropIns.cID";
+			ResultSet rs = stmt.executeQuery(query);
+
+			if (rs.next()) {
+				System.out.println("<< List of Reservation and Current Drop In Customer >>");
+				System.out.println("cID: " + rs.getInt("cID") + "\t" + "name: " + rs.getString("name"));
+			}
+
+			while (rs.next()) {
+				System.out.println("cID: " + rs.getInt("cID") + "\t" + "name: " + rs.getString("name"));
+			}
+			System.out.println();
+		} catch (SQLException e) {
+			System.out.println("Query Error: " + e.getStackTrace());
+		}
+	}
+
+		
+	
+	//Task 3: not working
 	public void checkAverageTableRequest() {
 		try {
 			Statement stmt =conn.createStatement();
-			String query = "select avg(numOfTable) from Reservations, currentdropins";
+			String query = "select avg(tables) where select numofTable from Reservations union select numOfTable from CurrentDropIns) tables";
 			ResultSet rs = stmt.executeQuery(query);
 
 			if (rs.next()) {
 				System.out.println("<< Average Table Requests >>");
-				System.out.println("Average Table: " + rs.getInt("Numoftable"));
+				System.out.println("Average Table: " + rs.getInt("numOfTable"));
 			}
 
 			while (rs.next()) {
-				System.out.println("Average Table: " + rs.getInt("Numoftable"));
+				System.out.println("Average Table: " + rs.getInt("numOfTable"));
 			}
 			System.out.println();
 		} catch (SQLException e) {
