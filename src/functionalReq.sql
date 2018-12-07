@@ -106,34 +106,40 @@ WHERE cid in (select cid from Customer where name = ? and phoneNum= ?)
       and timeDropIn = ? ;
 
 /*When a server is off, their assigned tables needs to be assigned to another server*/
+DELIMITER $$
 CREATE TRIGGER ServerOff
-AFTER Update ON Employee
-FOR EACH ROW
-WHEN NEW.isOff = 1
+    AFTER Update ON Employee
+    FOR EACH ROW
 BEGIN
+	IF NEW.isOff = 1 THEN
     UPDATE Restaurant
-      SET subServerID = OLD.sID and sID = ( select min(E1.sID)
- 					      from Employee E1
-      where E1.isOff = 0)
-    WHERE sID = NEW.sID;
-END;
+    SET Restaurant.subServerID = NEW.sID and Restaurant.sID =
+        (select min(employee.sID)
+         from employee
+         where employee.isOff = 0);
+    END IF;
+END$$
+DELIMITER ;
 
 /*When a server is back to work (when isOff is updated to 0),
 tables need to be reassigned to them*/
+DELIMITER $$
 CREATE TRIGGER ServerOn
-AFTER Update ON Employee
-FOR EACH ROW
-WHEN NEW.isOff = 0
+    AFTER Update ON Employee
+    FOR EACH ROW
 BEGIN
+    IF NEW.isOff = 0 THEN
     UPDATE Restaurant
-    SET subServerID = NULL and sID = NEW.sID
+    SET subServerID = 0 and sID = NEW.sID
     WHERE subServerID = NEW.sID;
-END;
+    END IF;
+END$$
+DELIMITER ;
 
 
 
 /*Find all reservations and current drop in of a particular  customer*/
-DELIMITER //
+DELIMITER $$
 CREATE PROCEDURE allDropInAndReservation (IN name VARCHAR, IN phoneNum VARCHAR)
 BEGIN
   select numOfTable, timeDropIn
@@ -147,34 +153,35 @@ BEGIN
   cid in (select cid
                 from Customer
                 where Customer.name = name and Customer.phoneNum = phoneNum);
-END //
+END $$
 DELIMITER ;
 
 
 /*Archiving Reservations*/
 
-CREATE PROCEDURE archiveReservations (IN cutOff VARCHAR(50))
+DELIMITER $$
+CREATE PROCEDURE archiveReservations (IN cutOff VARCHAR)
 BEGIN
-    INSERT INTO ReservationsArchive
+    INSERT INTO ReservationsArchive(numOfTable, timeReserved, cID, updatedAt)
     SELECT *
     FROM Reservations
     WHERE Reservations.updatedAt < cutOff;
 
     DELETE FROM Reservations
     WHERE Reservations.updatedAt < cutOff;
-END//
+END$$
 DELIMITER ;
 
 /*Archiving CurrentDropIns*/
-DELIMITER //
-CREATE PROCEDURE archiveCurrentDropIns (IN cutOff VARCHAR(50))
+DELIMITER $$
+CREATE PROCEDURE archiveCurrentDropIns (IN cutOff VARCHAR)
 BEGIN
-    INSERT INTO CurrentDropInsArchive
+    INSERT INTO CurrentDropInsArchive(numOfTable, timeReserved, cID, updatedAt)
     SELECT *
     FROM CurrentDropIns
     WHERE CurrentDropIns.updatedAt < cutOff;
 
     DELETE FROM CurrentDropIns
     WHERE CurrentDropIns.updatedAt < cutOff;
-END//
+END$$
 DELIMITER ;
