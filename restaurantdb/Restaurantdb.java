@@ -236,16 +236,21 @@ public class Restaurantdb {
 	public void checkCustomerManyReservation() {
 		try {
 			Statement stmt =conn.createStatement();
-			String query = "select name from Reservations, Customer where Customer.cID = Reservations.cID group by customer.cID having count(*)>1";
+			String query = "select name\r\n" + 
+					"from Reservations, Customer\r\n" + 
+					"where Customer.cID = Reservations.cID\r\n" + 
+					"group by customer.cID\r\n" + 
+					"having count(*)>1\r\n"  
+					;
 			ResultSet rs = stmt.executeQuery(query);
 
 			if (rs.next()) {
 				System.out.println("<< List of Customers with more than one reservation >>");
-				System.out.println("name: " + rs.getString("name"));
+				System.out.println("cID: "+ rs.getInt("cID")+ "\t" + "name: " + rs.getString("name"));
 			}
 
 			while (rs.next()) {
-				System.out.println("name: " + rs.getString("name"));
+				System.out.println("cID: "+ rs.getInt("cID")+ "\t" + "name: " + rs.getString("name"));
 			}
 			System.out.println();
 		} catch (SQLException e) {
@@ -256,16 +261,17 @@ public class Restaurantdb {
 	public void checkListReservationsNdropins() {
 		try {
 			Statement stmt =conn.createStatement();
-			String query = "select distinct cID, name from Customer FULL OUTER JOIN Reservations on Customer.cID = Reservations.cID UNION select distinct cID, name from Customer FULL OUTER JOIN CurrentDropIns on Customer.cID = CurrentDropIns.cID";
+			String query = "select Reservations.cID, CurrentDropIns.cID from Reservations join CurrentDropIns where cID IN (select cID from Customer)";
+					
 			ResultSet rs = stmt.executeQuery(query);
 
 			if (rs.next()) {
 				System.out.println("<< List of Reservation and Current Drop In Customer >>");
-				System.out.println("cID: " + rs.getInt("cID") + "\t" + "name: " + rs.getString("name"));
+				System.out.println("cID: " + rs.getInt("Reservations.cID") + "\t" + "cID: " + rs.getInt("CurrentDropIns.cID"));
 			}
 
 			while (rs.next()) {
-				System.out.println("cID: " + rs.getInt("cID") + "\t" + "name: " + rs.getString("name"));
+				System.out.println("cID: " + rs.getInt("Reservations.") + "\t" + "cID: " + rs.getInt("CurrentDropIns.cID"));
 			}
 			System.out.println();
 		} catch (SQLException e) {
@@ -279,16 +285,16 @@ public class Restaurantdb {
 	public void checkAverageTableRequest() {
 		try {
 			Statement stmt =conn.createStatement();
-			String query = "select avg(tables) where select numofTable from Reservations union select numOfTable from CurrentDropIns) tables";
+			String query = "select avg(tb) from sum((select numOfTable from Reservations) and (select numOfTable from CurrentDropIns)) tb";
 			ResultSet rs = stmt.executeQuery(query);
 
 			if (rs.next()) {
 				System.out.println("<< Average Table Requests >>");
-				System.out.println("Average Table: " + rs.getInt("numOfTable"));
+				System.out.println("Average Table: " + rs.getInt("tb"));
 			}
 
 			while (rs.next()) {
-				System.out.println("Average Table: " + rs.getInt("numOfTable"));
+				System.out.println("Average Table: " + rs.getInt("tb"));
 			}
 			System.out.println();
 		} catch (SQLException e) {
@@ -296,7 +302,7 @@ public class Restaurantdb {
 		}
 	}
 
-
+	//Task 5 Current Drop ins not reservation
 	public void checkCurrentDropInNoReservation() {
 		try {
 			Statement stmt =conn.createStatement();
