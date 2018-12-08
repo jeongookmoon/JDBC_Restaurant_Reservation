@@ -284,20 +284,19 @@ public class Restaurantdb {
 		}
 	}
 
-	// Task 3: not working
 	public void checkAverageTableRequest() {
 		try {
 			Statement stmt = conn.createStatement();
-			String query = "select avg(tb) from sum((select numOfTable from Reservations) and (select numOfTable from CurrentDropIns)) tb";
+			String query = "select avg(tables.numOfTable) label from (select numofTable from Reservations UNION ALL select numOfTable from CurrentDropIns) tables";
 			ResultSet rs = stmt.executeQuery(query);
 
 			if (rs.next()) {
-				System.out.println("<< Average Table Requests >>");
-				System.out.println("Average Table: " + rs.getInt("tb"));
+				System.out.println("<< Average Number of Table >>");
+				System.out.println("avg(numOfTable): " + rs.getDouble("label"));
 			}
 
 			while (rs.next()) {
-				System.out.println("Average Table: " + rs.getInt("tb"));
+				System.out.println("avg(numOfTable): " + rs.getDouble("label"));
 			}
 			System.out.println();
 		} catch (SQLException e) {
