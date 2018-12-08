@@ -25,9 +25,7 @@ CREATE TABLE Restaurant(
   numOfSeats INT,
   sID INT,
   subServerID INT,
-  primary key(tID),
-  FOREIGN KEY(sID) REFERENCES Employee(sID) on update cascade,
-  FOREIGN KEY(subServerID) REFERENCES Employee(sID) on update cascade
+  primary key(tID)
 );
 ALTER TABLE Restaurant AUTO_INCREMENT = 1;
 
@@ -91,7 +89,7 @@ BEGIN
 END//
 DELIMITER ;
 
-/*Find all reservations and current drop in of a particular  customer*/
+/*Find all reservations and current drop in of a particular  customer
 DELIMITER //
 CREATE PROCEDURE allDropInAndReservation (IN name VARCHAR, IN phoneNum VARCHAR)
 BEGIN
@@ -107,9 +105,40 @@ BEGIN
                 from Customer
                 where Customer.name = name and Customer.phoneNum = phoneNum);
 END //
+DELIMITER ;*/
+
+/*When a server is off, their assigned tables needs to be assigned to another server*/
+DELIMITER //
+CREATE TRIGGER ServerOff
+    AFTER Update ON Employee
+    FOR EACH ROW
+BEGIN
+	IF NEW.isOff = 1 THEN
+    UPDATE Restaurant
+    SET Restaurant.subServerID = NEW.sID and Restaurant.sID =
+        (select min(employee.sID)
+         from employee
+         where employee.isOff = 0);
+    END IF;
+END//
+DELIMITER ;
+
+/*When a server is back to work (when isOff is updated to 0),
+tables need to be reassigned to them*/
+DELIMITER //
+CREATE TRIGGER ServerOn
+    AFTER Update ON Employee
+    FOR EACH ROW
+BEGIN
+    IF NEW.isOff = 0 THEN
+    UPDATE Restaurant
+    SET subServerID = 0 and sID = NEW.sID
+    WHERE subServerID = NEW.sID;
+    END IF;
+END//
 DELIMITER ;
 
 # if the below data path doesn't work, use the full path from your machine
-LOAD DATA LOCAL INFILE '../data/employee.txt' INTO TABLE Employee;
-LOAD DATA LOCAL INFILE '../data/customer.txt' INTO TABLE Customer;
-LOAD DATA LOCAL INFILE '../data/restaurant.txt' INTO TABLE Restaurant;
+LOAD DATA LOCAL INFILE 'C:/Users/L/Desktop/RestaurantReservation/data/employee.txt' INTO TABLE Employee;
+LOAD DATA LOCAL INFILE 'C:/Users/L/Desktop/RestaurantReservation/data/customer.txt' INTO TABLE Customer;
+LOAD DATA LOCAL INFILE 'C:/Users/L/Desktop/RestaurantReservation/data/restaurant.txt' INTO TABLE Restaurant;
