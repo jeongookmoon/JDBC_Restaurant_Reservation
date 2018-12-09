@@ -27,38 +27,6 @@ public class Restaurantdb {
 		}
 	}
 
-	// public void serverOffTrigger() throws SQLException {
-	// try {
-	// String trigger = "CREATE TRIGGER ServerOff " + "AFTER Update ON Employee " +
-	// "FOR EACH ROW " + "BEGIN "
-	// + "IF NEW.isOff = 1 THEN " + "UPDATE Restaurant "
-	// + "SET Restaurant.subServerID = NEW.sID and Restaurant.sID =" + "(select
-	// min(employee.sID) "
-	// + "where employee.isOff = 0); " + "END IF; " + "END ";
-
-	// Statement stmt = conn.createStatement();
-	// stmt.executeQuery(trigger);
-	// } catch (SQLException e) {
-	// System.out.println("Error:" + e.getStackTrace());
-	// } finally {
-	// System.out.println("TRIGGER ServerOff Successfully Created\n");
-	// }
-
-	// }
-
-	// public void serverOnTrigger() throws SQLException {
-	// conn.createStatement().execute("DROP TRIGGER IF EXISTS ServerOn");
-
-	// StringBuffer trigger = new StringBuffer();
-	// trigger.append("DELIMITER $$ CREATE TRIGGER ServerOn AFTER Update ON Employee
-	// ");
-	// trigger.append("FOR EACH ROW BEGIN IF NEW.isOff = 0 THEN ");
-	// trigger.append("UPDATE Restaurant SET subServerID = 0 and sID = NEW.sID ");
-	// trigger.append("WHERE subServerID = NEW.sID; END IF; END$$ DELIMITER ;");
-
-	// conn.createStatement().execute(trigger.toString());
-	// }
-
 	public void closeConnection() {
 		try {
 			if (conn != null) {
@@ -202,7 +170,7 @@ public class Restaurantdb {
 			System.out.println("[D] Find Employee(s) W/O Assigned Table");
 			System.out.println("[E] Check Current Drops In Customer");
 			System.out.println("[J] Check Average Table Requests");
-			System.out.println("[P] Complete list of Reservations and Drop Ins");
+			System.out.println("[P] Complete list of all customers paired with their reservations");
 			System.out.println("[H] Check Customer with more than one Reservations");
 			System.out.println("[M] MainMenu");
 			String input = scanner.nextLine().toLowerCase();
@@ -260,23 +228,22 @@ public class Restaurantdb {
 		}
 	}
 
-	// Task 4 not working query error
 	public void checkListReservationsNdropins() {
 		try {
 			Statement stmt = conn.createStatement();
-			String query = "select Reservations.cID, CurrentDropIns.cID from Reservations join CurrentDropIns where cID IN (select cID from Customer)";
+			String query = "select * from Customer left join Reservations on Customer.cID = Reservations.cID UNION select * from Customer right join Reservations on Customer.cID = Reservations.cID";
 
 			ResultSet rs = stmt.executeQuery(query);
 
 			if (rs.next()) {
-				System.out.println("<< List of Reservation and Current Drop In Customer >>");
+				System.out.println("<< List of Reservations with Customer Names >>");
 				System.out.println(
-						"cID: " + rs.getInt("Reservations.cID") + "\t" + "cID: " + rs.getInt("CurrentDropIns.cID"));
+						"Customer Name: "+ rs.getString("name")+" Reservation time: "+ rs.getString("timeReserved"));
 			}
 
 			while (rs.next()) {
 				System.out.println(
-						"cID: " + rs.getInt("Reservations.") + "\t" + "cID: " + rs.getInt("CurrentDropIns.cID"));
+						"Customer Name: "+ rs.getString("name")+" Reservation time: "+ rs.getString("timeReserved"));
 			}
 			System.out.println();
 		} catch (SQLException e) {
@@ -557,36 +524,6 @@ public class Restaurantdb {
 		else
 			fail();
 	}
-
-	// public int deleteCustomer(String name, String phoneNum) {
-	// int result = 0;
-	// try {
-	// PreparedStatement pstmt = conn.prepareStatement("DELETE FROM Customer WHERE
-	// name=? and phoneNum=?");
-	// pstmt.setString(1, name);
-	// pstmt.setString(2, phoneNum);
-	// result = pstmt.executeUpdate();
-	// } catch (SQLException e) {
-	// System.out.println("Query Error: " + e.getStackTrace());
-	// }
-	// return result;
-	// }
-
-	// public void deleteCustomerMenu() {
-	// Scanner scanner = new Scanner(System.in);
-	// System.out.println("<<Delete Customer>>\n");
-
-	// System.out.println("Customer Name?");
-	// String name = scanner.nextLine();
-
-	// System.out.println("Customer Phone Number?");
-	// String phoneNum = scanner.nextLine();
-
-	// if (deleteCustomer(name, phoneNum) != 0)
-	// success();
-	// else
-	// fail();
-	// }
 
 	public int updateCustomer(String name, String phoneNum, String newPhoneNum) {
 		int result = 0;
