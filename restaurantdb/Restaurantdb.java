@@ -699,10 +699,9 @@ public class Restaurantdb {
 				cID = rs.getInt("cID");
 			}
 			PreparedStatement pstmt = conn.prepareStatement(
-					"INSERT INTO CurrentDropIns(numOfTable, timeDropIn, cID, queueID) select ?, ?, cid, queueID from Customer where phoneNume = ? and name = ?");
+					"INSERT INTO CurrentDropIns(numOfTable, timeDropIn, cID) select ?, ?, cid from Customer where phoneNum = ? and name = ?");
 			pstmt.setInt(1, numTable);
 			pstmt.setString(2, DropInsTime);
-			pstmt.setInt(3, cID);
 			pstmt.setString(3, phoneNum);
 			pstmt.setString(4, name);
 			result = pstmt.executeUpdate();
@@ -732,8 +731,8 @@ public class Restaurantdb {
 		else
 			fail();
 	}
-	
-	
+
+
 
 	public void makeReservationNewCustomerMenu() {
 		Scanner scanner = new Scanner(System.in);
