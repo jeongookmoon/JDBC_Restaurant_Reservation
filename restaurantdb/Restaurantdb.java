@@ -582,7 +582,7 @@ public class Restaurantdb {
 			String input = scanner.nextLine().toLowerCase();
 			switch (input) {
 			case "a":
-				makeReservationMenu();
+				makeNewDropInsRequestMenu();
 				break;
 			case "b":
 				deleteReservationMenu();
@@ -684,6 +684,56 @@ public class Restaurantdb {
 		else
 			fail();
 	}
+	/*
+	 * Current customer MAKE NEW DROP IN REQUEST
+	 */
+	public int makeNewDropInsRequest(int numTable, String DropInsTime, String phoneNum, String name ) {
+		int result = 0;
+		int cID = 0;
+		try {
+			Statement stmt = conn.createStatement();
+			String query = "select cID from customer WHERE name = \"" + name + "\" and phoneNum = " + phoneNum;
+			ResultSet rs = stmt.executeQuery(query);
+			if (rs.next()) {
+				result = 1;
+				cID = rs.getInt("cID");
+			}
+			PreparedStatement pstmt = conn.prepareStatement(
+					"INSERT INTO CurrentDropIns(numOfTable, timeDropIn, cID, queueID) select ?, ?, cid, queueID from Customer where phoneNume = ? and name = ?");
+			pstmt.setInt(1, numTable);
+			pstmt.setString(2, DropInsTime);
+			pstmt.setInt(3, cID);
+			pstmt.setString(3, phoneNum);
+			pstmt.setString(4, name);
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("Query Error: " + e.getStackTrace());
+		}
+		return result;
+	}
+	public void makeNewDropInsRequestMenu() {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Welcome back, thank you for choosing DB restaurant");
+		System.out.println("Name?");
+		String name = scanner.nextLine();
+
+		System.out.println("Can we have your phone number, please? ");
+		String phoneNum = scanner.nextLine();
+
+		System.out.println("Number of table, please? (ex: 1, 2, 3 ..)");
+		int numTable = scanner.nextInt();
+		String dummy = scanner.nextLine(); // Consumes "\n"
+
+		System.out.println("Drop Ins time, please? (ex: 2018-12-31 17:30:00)");
+		String dropInsTime = scanner.nextLine();
+
+		if (makeNewDropInsRequest(numTable, dropInsTime, phoneNum, name) != 0)
+			success();
+		else
+			fail();
+	}
+	
+	
 
 	public void makeReservationNewCustomerMenu() {
 		Scanner scanner = new Scanner(System.in);
