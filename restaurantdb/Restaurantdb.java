@@ -17,7 +17,7 @@ public class Restaurantdb {
 			// DriverManager.useSSL=false;
 			conn = DriverManager.getConnection(
 					"jdbc:mysql://localhost:3306/RestaurantReservation?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&autoReconnect=true&useSSL=false",
-					"root", "faith114");
+					"root", "Xayeuxa1110!");
 
 			// triggers not working yet
 			// serverOffTrigger();
@@ -242,22 +242,17 @@ public class Restaurantdb {
 	//Task 1 customer with more than one reservation, does not display the output
 	public void checkCustomerManyReservation() {
 		try {
-			Statement stmt =conn.createStatement();
-			String query = "select name\r\n" +
-					"from Reservations, Customer\r\n" +
-					"where Customer.cID = Reservations.cID\r\n" +
-					"group by customer.cID\r\n" +
-					"having count(*)>1\r\n"
-					;
+			Statement stmt = conn.createStatement();
+			String query = "select name from Reservations, Customer where Customer.cID = Reservations.cID group by customer.cID having count(*)>1";
 			ResultSet rs = stmt.executeQuery(query);
 
 			if (rs.next()) {
 				System.out.println("<< List of Customers with more than one reservation >>");
-				System.out.println("cID: "+ rs.getInt("cID")+ "\t" + "name: " + rs.getString("name"));
+				System.out.println("name: " + rs.getString("name"));
 			}
 
 			while (rs.next()) {
-				System.out.println("cID: "+ rs.getInt("cID")+ "\t" + "name: " + rs.getString("name"));
+				System.out.println("name: " + rs.getString("name"));
 			}
 			System.out.println();
 		} catch (SQLException e) {
@@ -267,7 +262,7 @@ public class Restaurantdb {
 	//Task 4 not working query error
 	public void checkListReservationsNdropins() {
 		try {
-			Statement stmt =conn.createStatement();
+			Statement stmt = conn.createStatement();
 			String query = "select Reservations.cID, CurrentDropIns.cID from Reservations join CurrentDropIns where cID IN (select cID from Customer)";
 
 			ResultSet rs = stmt.executeQuery(query);
@@ -291,17 +286,17 @@ public class Restaurantdb {
 	//Task 3: not working
 	public void checkAverageTableRequest() {
 		try {
-			Statement stmt =conn.createStatement();
-			String query = "select avg(tb) from sum((select numOfTable from Reservations) and (select numOfTable from CurrentDropIns)) tb";
+			Statement stmt = conn.createStatement();
+			String query = "select avg(tables.numOfTable) from (select numOfTable from Reservations UNION ALL select numOfTable from CurrentDropIns) tables";
 			ResultSet rs = stmt.executeQuery(query);
 
 			if (rs.next()) {
 				System.out.println("<< Average Table Requests >>");
-				System.out.println("Average Table: " + rs.getInt("tb"));
+				System.out.println("Average Table: " + rs.getInt("tables"));
 			}
 
 			while (rs.next()) {
-				System.out.println("Average Table: " + rs.getInt("tb"));
+				System.out.println("Average Table: " + rs.getInt("tables"));
 			}
 			System.out.println();
 		} catch (SQLException e) {
@@ -625,6 +620,35 @@ public class Restaurantdb {
 			success();
 		else
 			fail();
+	}
+	public void currentDropInsMenu() {
+		displayTable("currentdropins");
+		Scanner scanner = new Scanner(System.in);
+		boolean endFlag = false;
+		while (endFlag != true) {
+			System.out.println("<<Current Drop Ins Menu>>");
+			System.out.println("[A] Create new Drop Ins requests");
+			System.out.println("[B] Delete existing Drop Ins from DB");
+			System.out.println("[C] Update number of table needed for current Drop Ins");
+			System.out.println("[M] MainMenu");
+			String input = scanner.nextLine().toLowerCase();
+			switch (input) {
+			case "a":
+				makeReservationMenu();
+				break;
+			case "b":
+				deleteReservationMenu();
+				break;
+			case "c":
+				updateReservationInfoMenu();
+				break;
+			case "m":
+				endFlag = true;
+				break;
+			default:
+				menuError();
+			}
+		}
 	}
 
 	public void reservationMenu() {

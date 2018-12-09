@@ -28,7 +28,7 @@ public class Restaurant {
 					res.restaurantMenu();
 					break;
 				case "d":
-
+					res.currentDropInsMenu();
 					break;
 				case "e":
 					res.reservationMenu();
