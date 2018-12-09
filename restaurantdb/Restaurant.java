@@ -1,5 +1,13 @@
 import java.util.Scanner;
-
+/*
+ * Author: Jeong Moon, Hung Tang, Faith Chau
+ * Description: This is the restaurant reservation system allowing restaurant can perform multiple task. It also
+ * allow its customer and employee utilize it. This is the semester project done by Team Pineapple.
+ * Date: 12/8/2018
+ */
+/*
+ * main method of the app displaying different categories. Each user will select the category that they belongs to.
+ */
 public class Restaurant {
 	public static void main(String[] args) {
 		System.out.println("Welcome to the DB Restaurant Reservation System");
@@ -48,7 +56,9 @@ public class Restaurant {
 		res.closeConnection();
 		System.out.println("Good Bye");
 	}
-
+	/*
+	 * menuError will user choose invalid option
+	 */
 	public static void menuError() {
 		System.out.println("Please Choose Valid Option");
 	}

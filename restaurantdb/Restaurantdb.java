@@ -5,12 +5,14 @@ import java.sql.*;
 /**
  * @author Hung Tang, Faith Chau, Jeong Moon
  * @description the application is about restaurant reservation system
- *
+ *	Date: 12/8/2018
  */
 public class Restaurantdb {
 
 	Connection conn;
-
+	/**
+	 * Constructor Restaurantdb connect to to the jdbc driver
+	 */
 	public Restaurantdb() {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -26,7 +28,9 @@ public class Restaurantdb {
 			System.out.println(e);
 		}
 	}
-
+	/**
+	 * Close Connection will disconnect with driver when task done
+	 */
 	public void closeConnection() {
 		try {
 			if (conn != null) {
@@ -37,8 +41,9 @@ public class Restaurantdb {
 		}
 	}
 
-	/*
-	 * Displaying table
+	/**
+	 * displayTable function takes in name of table in database and display it 
+	 * @param tableName: name of data table stored in database
 	 */
 	public void displayTable(String tableName) {
 		try {
@@ -64,8 +69,8 @@ public class Restaurantdb {
 		}
 	}
 
-	/*
-	 * Restaurant options
+	/**
+	 * restaurantMenu allow restaurant to either insert a table or delete a table from database
 	 */
 	public void restaurantMenu() {
 		displayTable("restaurant");
@@ -92,7 +97,13 @@ public class Restaurantdb {
 			}
 		}
 	}
-
+	/**
+	 * insertRetaurant display new table being insert with new number of seat, occupied of not, and sID
+	 * @param occupied tabled being used
+	 * @param numOfSeats the quantity of seat available
+	 * @param sID
+	 * @return 0
+	 */
 	public int insertRestaurant(boolean occupied, int numOfSeats, int sID) {
 		int result = 0;
 		try {
@@ -107,7 +118,9 @@ public class Restaurantdb {
 		}
 		return result;
 	}
-
+	/**
+	 * insertRestaurantMenu serving the purpose of above function 
+	 */
 	public void insertRestaurantMenu() {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("<<Insert Restaurant Table>>\n");
@@ -130,7 +143,11 @@ public class Restaurantdb {
 		else
 			fail();
 	}
-
+	/**
+	 * deleteRestaurant allowing delete a table
+	 * @param tID represent table ID
+	 * @return 0
+	 */
 	public int deleteRestaurant(int tID) {
 		int result = 0;
 		try {
@@ -142,7 +159,9 @@ public class Restaurantdb {
 		}
 		return result;
 	}
-
+	/*
+	 * deleteRestaurantMenu prompt user the table they want to delete
+	 */
 	public void deleteRestaurantMenu() {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("<<Delete Restaurant Table>>\n");
@@ -157,7 +176,9 @@ public class Restaurantdb {
 			fail();
 
 	}
-
+	/**
+	 * employMenu function display all the options a employee can choose.
+	 */
 	public void employeeMenu() {
 		displayTable("employee");
 		Scanner scanner = new Scanner(System.in);
@@ -207,7 +228,9 @@ public class Restaurantdb {
 			}
 		}
 	}
-
+	/**
+	 * checkCustomerManyReservation allow employee to check customer with more than 1 reservation
+	 */
 	public void checkCustomerManyReservation() {
 		try {
 			Statement stmt = conn.createStatement();
@@ -227,7 +250,9 @@ public class Restaurantdb {
 			System.out.println("Query Error: " + e.getStackTrace());
 		}
 	}
-
+	/**
+	 * checkListReservationsNdropins check list of reservation with customer name.
+	 */
 	public void checkListReservationsNdropins() {
 		try {
 
@@ -252,7 +277,9 @@ public class Restaurantdb {
 			System.out.println("Query Error: " + e.getStackTrace());
 		}
 	}
-
+	/**
+	 * checkAverageTableRequest average table requests by both reservation and drop in
+	 */
 	public void checkAverageTableRequest() {
 		try {
 
@@ -279,7 +306,9 @@ public class Restaurantdb {
 		}
 	}
 
-	// Task 5 Current Drop ins not reservation
+	/**
+	 * checkCurrentDropInNoReservation check the current drop in customer only
+	 */
 	public void checkCurrentDropInNoReservation() {
 		try {
 			Statement stmt = conn.createStatement();
@@ -299,7 +328,9 @@ public class Restaurantdb {
 			System.out.println("Query Error: " + e.getStackTrace());
 		}
 	}
-
+	/**
+	 * archiveReservations save the reservation info
+	 */
 	public void archiveReservations() {
 		Scanner in = new Scanner(System.in);
 		System.out.println("<<Archive Reservations>>\n");
@@ -318,7 +349,9 @@ public class Restaurantdb {
 			System.out.println("Query Error: " + e.getStackTrace());
 		}
 	}
-
+	/**
+	 * archiveCurrentDropIns save the current drop in info
+	 */
 	public void archiveCurrentDropIns() {
 		Scanner in = new Scanner(System.in);
 		System.out.println("<<Archive CurrentDropIns>>\n");
@@ -337,7 +370,9 @@ public class Restaurantdb {
 			System.out.println("Query Error: " + e.getStackTrace());
 		}
 	}
-
+	/**
+	 * findEmployeeWOTable check employee without a table now
+	 */
 	public void findEmployeeWOTable() {
 		try {
 			Statement stmt = conn.createStatement();
@@ -357,7 +392,13 @@ public class Restaurantdb {
 			System.out.println("Query Error: " + e.getStackTrace());
 		}
 	}
-
+	/**
+	 * insert new employee
+	 * @param name
+	 * @param isOFF is not current active
+	 * @param phoneNum
+	 * @return 0
+	 */
 	public int insertEmployee(String name, boolean isOFF, String phoneNum) {
 		int result = 0;
 		try {
@@ -372,7 +413,9 @@ public class Restaurantdb {
 		}
 		return result;
 	}
-
+	/**
+	 * insertEmployeeMenu create new employee information
+	 */
 	public void insertEmployeeMenu() {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("<<Insert Employee>>\n");
@@ -395,7 +438,12 @@ public class Restaurantdb {
 		else
 			fail();
 	}
-
+	/**
+	 * Delete an employee information
+	 * @param name
+	 * @param phoneNum
+	 * @return
+	 */
 	public int deleteEmployee(String name, String phoneNum) {
 		int result = 0;
 		try {
@@ -408,7 +456,9 @@ public class Restaurantdb {
 		}
 		return result;
 	}
-
+	/**
+	 * deleteEmployeeMenu prompt information of the employee user want to delete
+	 */
 	public void deleteEmployeeMenu() {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("<<Delete Employee>>\n");
@@ -425,7 +475,13 @@ public class Restaurantdb {
 			fail();
 
 	}
-
+	/**
+	 * updateEmpployee employee can update their personal information
+	 * @param name
+	 * @param isOFF
+	 * @param phoneNum
+	 * @return
+	 */
 	public int updateEmployee(String name, boolean isOFF, String phoneNum) {
 		int result = 0;
 		try {
@@ -439,7 +495,9 @@ public class Restaurantdb {
 		}
 		return result;
 	}
-
+	/**
+	 * updateEmployeeIsOffMenu update the current working status of employee whether they are currently working
+	 */
 	public void updateEmployeeIsOffMenu() {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("<<Update Employee IsOff>>\n");
@@ -461,19 +519,27 @@ public class Restaurantdb {
 		else
 			fail();
 	}
-
+	/**
+	 * menuError prompt user to choose correct option
+	 */
 	public static void menuError() {
 		System.out.println("Please Choose Valid Option");
 	}
-
+	/**
+	 * if one task done success, the successfully done message will be prompted
+	 */
 	public static void success() {
 		System.out.println("Successfully Done");
 	}
-
+	/**
+	 * if one task failed, the failed message will be prompted.
+	 */
 	public static void fail() {
 		System.out.println("Failed");
 	}
-
+	/**
+	 * customerMenu allow customer can select one the tasks they want to perform
+	 */
 	public void customerMenu() {
 		displayTable("customer");
 		Scanner scanner = new Scanner(System.in);
@@ -503,7 +569,12 @@ public class Restaurantdb {
 			}
 		}
 	}
-
+	/**
+	 * for new customer, insertCustomer information so it can be stored in the database.
+	 * @param name
+	 * @param phoneNum
+	 * @return
+	 */
 	public int insertCustomer(String name, String phoneNum) {
 		int result = 0;
 		try {
@@ -516,7 +587,9 @@ public class Restaurantdb {
 		}
 		return result;
 	}
-
+	/**
+	 * insertCustomerMenu prompt the user menu
+	 */
 	public void insertCustomerMenu() {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("<<Insert Customer>>\n");
@@ -532,7 +605,13 @@ public class Restaurantdb {
 		else
 			fail();
 	}
-
+	/**
+	 * updateCustomer allow customer to update their name, new phone number.
+	 * @param name
+	 * @param phoneNum
+	 * @param newPhoneNum
+	 * @return
+	 */
 	public int updateCustomer(String name, String phoneNum, String newPhoneNum) {
 		int result = 0;
 		try {
@@ -547,7 +626,9 @@ public class Restaurantdb {
 		}
 		return result;
 	}
-
+	/**
+	 * updateCustomerinforMenu prompt the user allow them to enter their updated phone number
+	 */
 	public void updateCustomerInfoMenu() {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("<<Update Customer IsOff>>\n");
@@ -566,8 +647,8 @@ public class Restaurantdb {
 		else
 			fail();
 	}
-	/*
-	 * CURRENT DROP INS MENU
+	/**
+	 * currentDropInsMenu display option what user can do with current drop in customer
 	 */
 	public void currentDropInsMenu() {
 		displayTable("currentdropins");
@@ -598,8 +679,9 @@ public class Restaurantdb {
 			}
 		}
 	}
-	/*
-	 * RESERVATION MENU
+	/**
+	 * ReservationMenu display reservation option for user, they can either 
+	 * select make new reservation, delete reservation or update current reservation.
 	 */
 	public void reservationMenu() {
 		displayTable("reservations");
@@ -630,7 +712,14 @@ public class Restaurantdb {
 			}
 		}
 	}
-
+	/**
+	 * makeReservationReturnCustomer make new reservation for returning customer
+	 * @param name
+	 * @param phoneNum
+	 * @param numTable
+	 * @param dateTime
+	 * @return new reservation in database
+	 */
 	public int makeReservationReturnCustomer(String name, String phoneNum, int numTable, String dateTime) {
 		int result = 0;
 		int result2 = 0;
@@ -654,7 +743,14 @@ public class Restaurantdb {
 		}
 		return result + result2;
 	}
-
+	/**
+	 * this function allow to make reservation for new customer include their name, phone number, date and time
+	 * and number of table they request
+	 * @param name
+	 * @param phoneNum
+	 * @param numTable
+	 * @param dateTime
+	 */
 	public void makeReservationNewCustomer(String name, String phoneNum, int numTable, String dateTime) {
 		if (insertCustomer(name, phoneNum) != 0)
 			success();
@@ -662,7 +758,9 @@ public class Restaurantdb {
 			fail();
 		makeReservationReturnCustomer(name, phoneNum, numTable, dateTime);
 	}
-
+	/**
+	 * this will prompt the questions to collect information to make new reservation for returning customer
+	 */
 	public void makeReservationReturnCustomerMenu() {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("Welcome back, thank you for choosing DB restaurant");
@@ -684,8 +782,9 @@ public class Restaurantdb {
 		else
 			fail();
 	}
-	/*
-	 * Current customer MAKE NEW DROP IN REQUEST
+	/**
+	 * makeNewDropInsRequest allow existing customer to make a new requests include
+	 * number of table, time they drop in, their phone number, and name.
 	 */
 	public int makeNewDropInsRequest(int numTable, String DropInsTime, String phoneNum, String name ) {
 		int result = 0;
@@ -699,7 +798,7 @@ public class Restaurantdb {
 				cID = rs.getInt("cID");
 			}
 			PreparedStatement pstmt = conn.prepareStatement(
-					"INSERT INTO CurrentDropIns(numOfTable, timeDropIn, cID, queueID) select ?, ?, cid, queueID from Customer where phoneNume = ? and name = ?");
+					"INSERT INTO CurrentDropIns(numOfTable, timeDropIn, cID) select ?, ?, cid from Customer where phoneNume = ? and name = ?");
 			pstmt.setInt(1, numTable);
 			pstmt.setString(2, DropInsTime);
 			pstmt.setInt(3, cID);
@@ -711,6 +810,9 @@ public class Restaurantdb {
 		}
 		return result;
 	}
+	/**
+	 *  makeNewDropInsRequestMenu also prompt customer about making new dropin request information
+	 */
 	public void makeNewDropInsRequestMenu() {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("Welcome back, thank you for choosing DB restaurant");
@@ -733,8 +835,10 @@ public class Restaurantdb {
 			fail();
 	}
 	
-	
-
+	/**
+	 * makeReservationNewCustomerMenu new customer follow the instruction below to reserve a table for them
+	 * this will include their name, phone number, and number of table, date and time.
+	 */
 	public void makeReservationNewCustomerMenu() {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("Thank you for choosing DB Restaurant");
@@ -752,7 +856,9 @@ public class Restaurantdb {
 		String dateTime = scanner.nextLine();
 		makeReservationNewCustomer(name, phoneNum, numTable, dateTime);
 	}
-
+	/**
+	 * makeReservationMenu to separate new and existing customer, so restaurant can make new account for new customer
+	 */
 	public void makeReservationMenu() {
 		Scanner customerScan = new Scanner(System.in);
 		System.out.println("<<Make Reservation>>\n");
@@ -771,7 +877,12 @@ public class Restaurantdb {
 			System.out.println("That's not a valid answer");
 		}
 	}
-
+	/**
+	 * Customer can also delete existing reservation, the reservation will be deleted in database
+	 * @param name
+	 * @param phoneNum
+	 * @return
+	 */
 	public int deleteReservation(String name, String phoneNum) {
 		int result = 0;
 		int cID = 0;
@@ -792,7 +903,9 @@ public class Restaurantdb {
 		}
 		return result;
 	}
-
+	/**
+	 * eleteReservationMenu customer need to provide their name and phone number so restaurant can delete their reservation
+	 */
 	public void deleteReservationMenu() {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("<<Delete Reservation>>\n");
@@ -809,7 +922,14 @@ public class Restaurantdb {
 			fail();
 
 	}
-
+	/**
+	 * updateReservation allow restaurant can update the reservation information
+	 * @param name
+	 * @param phoneNum
+	 * @param reservedDateTime
+	 * @param newDateTime
+	 * @return
+	 */
 	public int updateReservation(String name, String phoneNum, String reservedDateTime, String newDateTime) {
 		int result = 0;
 		try {
@@ -825,7 +945,10 @@ public class Restaurantdb {
 		}
 		return result;
 	}
-
+	/**
+	 * updateReservationInfoMenu customer need to provide their name, phone number, reserved date and time, and new update date and time
+	 * so restaurant can update
+	 */
 	public void updateReservationInfoMenu() {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("<<Update Reservation IsOff>>\n");
@@ -847,14 +970,14 @@ public class Restaurantdb {
 		else
 			fail();
 	}
-	/*
-	 * UPDATE CURRENT DROP INS NUMBER OF TABLE
+	/**
+	 * updateCurrentDropIns allow drop ins customer can update number of table they want
+	 * @param name
+	 * @param phoneNum
+	 * @param DropInsTime
+	 * @param newNumofTable
+	 * @return
 	 */
-	//UPDATE CurrentDropIns
-	//set numOfTable = ?
-		//	where cid in (select cid from Customer where name =? and phoneNum =?)
-			//      and timeDropIn = ?
-
 	public int updateCurrentDropIns(String name, String phoneNum, String DropInsTime, int newNumofTable) {
 		int result = 0;
 		try {
@@ -870,6 +993,9 @@ public class Restaurantdb {
 		}
 		return result;
 	}
+	/**
+	 *  updateCurrentDropInsMenu simply ask customer for the new update number of table
+	 */
 	public void updateCurrentDropInsMenu() {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("<<Update Current drop ins Number of Tables>>\n");
@@ -893,7 +1019,12 @@ public class Restaurantdb {
 
 
 	}
-
+	/**
+	 * customer can delete current drop in 
+	 * @param name
+	 * @param phoneNum
+	 * @return
+	 */
 	public int deleteCurrentDropIn(String name, String phoneNum) {
 		int result = 0;
 		int cID = 0;
@@ -913,7 +1044,9 @@ public class Restaurantdb {
 		}
 		return result;
 	}
-
+	/**
+	 * deleteCurrentDropInMenu prompt user to provide their name and phone number, so their current drop in can be deleted from database
+	 */
 	public void deleteCurrentDropInMenu() {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("<<Delete Current Drop in>>\n");
