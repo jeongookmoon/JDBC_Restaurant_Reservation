@@ -17,7 +17,7 @@ public class Restaurantdb {
 			// DriverManager.useSSL=false;
 			conn = DriverManager.getConnection(
 					"jdbc:mysql://localhost:3306/RestaurantReservation?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&autoReconnect=true&useSSL=false",
-					"root", "Xayeuxa1110!");
+					"root", "faith114");
 
 			// triggers not working yet
 			// serverOffTrigger();
@@ -585,7 +585,7 @@ public class Restaurantdb {
 				makeReservationMenu();
 				break;
 			case "b":
-				deleteReservationMenu();
+				deleteCurrentDropInMenu();
 				break;
 			case "c":
 				updateCurrentDropInsMenu();
@@ -841,6 +841,43 @@ public class Restaurantdb {
 		else
 			fail();
 
-		
+
+	}
+
+	public int deleteCurrentDropIn(String name, String phoneNum) {
+		int result = 0;
+		int cID = 0;
+		try {
+			Statement stmt = conn.createStatement();
+			String query = "select cID from customer WHERE name = \"" + name + "\" and phoneNum = " + phoneNum;
+			ResultSet rs = stmt.executeQuery(query);
+			if (rs.next()) {
+				result = 1;
+				cID = rs.getInt("cID");
+			}
+			PreparedStatement pstmt = conn.prepareStatement("DELETE FROM CurrentDropIns WHERE cID=?");
+			pstmt.setInt(1, cID);
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("Query Error: " + e.getStackTrace());
+		}
+		return result;
+	}
+
+	public void deleteCurrentDropInMenu() {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("<<Delete Current Drop in>>\n");
+
+		System.out.println("Name?");
+		String name = scanner.nextLine();
+
+		System.out.println("Phone Number?");
+		String phoneNum = scanner.nextLine();
+
+		if (deleteCurrentDropIn(name, phoneNum) != 0)
+			success();
+		else
+			fail();
+
 	}
 }
