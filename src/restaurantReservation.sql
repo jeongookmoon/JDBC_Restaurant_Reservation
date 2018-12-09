@@ -61,6 +61,18 @@ CREATE TABLE CurrentDropInsArchive(
   updatedAt DATETIME
 );
 
+/* Inputting mock data*/
+
+INSERT INTO CurrentDropInsArchive(numOfTable,timeDropIn,cID, updatedAt)
+Values(2,"00:12:00",1, "2018-12-03 14:26:35"),
+      (2,"00:14:00",2, "2018-12-03 14:26:35"),
+      (1,"00:14:20",3, "2018-12-03 14:26:35");
+
+INSERT INTO ReservationsArchive(numOfTable,timeReserved,cID, updatedAt)
+      Values(1,"00:08:00",1, "2018-12-03 13:26:35"),
+            (1,"00:22:00",2, "2018-12-03 16:26:35"),
+            (1,"00:21:20",3, "2018-12-03 18:26:35");
+
 /*Archiving Reservations*/
 DELIMITER //
 CREATE PROCEDURE archiveReservations (IN cutOff VARCHAR(50))
@@ -88,24 +100,6 @@ BEGIN
     WHERE CurrentDropIns.updatedAt < cutOff;
 END//
 DELIMITER ;
-
-/*Find all reservations and current drop in of a particular  customer
-DELIMITER //
-CREATE PROCEDURE allDropInAndReservation (IN name VARCHAR, IN phoneNum VARCHAR)
-BEGIN
-  select numOfTable, timeDropIn
-  from CurrentDropIns
-  where cid in (select cid
-                from Customer
-                where Customer.name = name and Customer.phoneNum = phoneNum);
-
-  select numOfTable, timeReserved
-  from reservations
-  cid in (select cid
-                from Customer
-                where Customer.name = name and Customer.phoneNum = phoneNum);
-END //
-DELIMITER ;*/
 
 /*When a server is off, their assigned tables needs to be assigned to another server*/
 DELIMITER //

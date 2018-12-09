@@ -21,13 +21,3 @@ Values(1, "00:13:10", 3),
       (2,"00:17:00", 1),
       (1,"00:15:30", 3),
       (1, "00:22:00", 6);
-
-INSERT INTO CurrentDropInsArchive(numOfTable,timeDropIn,cID, updatedAt)
-Values(2,"00:12:00",1, "2018-12-03 14:26:35"),
-      (2,"00:14:00",2, "2018-12-03 14:26:35"),
-      (1,"00:14:20",3, "2018-12-03 14:26:35");
-
-INSERT INTO ReservationsArchive(numOfTable,timeReserved,cID, updatedAt)
-      Values(1,"00:08:00",1, "2018-12-03 13:26:35"),
-            (1,"00:22:00",2, "2018-12-03 16:26:35"),
-            (1,"00:21:20",3, "2018-12-03 18:26:35");
