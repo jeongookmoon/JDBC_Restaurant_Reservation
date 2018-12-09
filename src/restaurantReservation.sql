@@ -139,6 +139,6 @@ END//
 DELIMITER ;
 
 # if the below data path doesn't work, use the full path from your machine
-LOAD DATA LOCAL INFILE 'C:/Users/L/Desktop/RestaurantReservation/data/employee.txt' INTO TABLE Employee;
-LOAD DATA LOCAL INFILE 'C:/Users/L/Desktop/RestaurantReservation/data/customer.txt' INTO TABLE Customer;
-LOAD DATA LOCAL INFILE 'C:/Users/L/Desktop/RestaurantReservation/data/restaurant.txt' INTO TABLE Restaurant;
+LOAD DATA LOCAL INFILE 'C:/Users/ABC/Desktop/RestaurantReservation/data/employee.txt' INTO TABLE Employee;
+LOAD DATA LOCAL INFILE 'C:/Users/ABC/Desktop/RestaurantReservation/data/customer.txt' INTO TABLE Customer;
+LOAD DATA LOCAL INFILE 'C:/Users/ABC/Desktop/RestaurantReservation/data/restaurant.txt' INTO TABLE Restaurant;
